@@ -32,6 +32,8 @@ header h1{font-size:22px;font-weight:500}
 header p{font-size:13px;color:var(--text3);margin-top:2px}
 .src{background:var(--surface2);border:.5px solid var(--border);border-radius:var(--radius);padding:7px 14px;font-size:12px;color:var(--text3);display:flex;align-items:center;gap:8px;margin-bottom:1rem}
 .dot{width:7px;height:7px;border-radius:50%;background:#22c55e;flex-shrink:0}
+.dot.loading{background:#f59e0b}
+.dot.erro{background:#ef4444}
 .tb{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:.75rem}
 .tb input,.tb select{padding:7px 11px;border:.5px solid var(--border-strong);border-radius:var(--radius);background:var(--surface);color:var(--text);font-size:14px;outline:none}
 .tb input{flex:1;min-width:200px}
@@ -74,8 +76,8 @@ footer{margin-top:2rem;font-size:12px;color:var(--text3);text-align:center}
     <p>Cadastro de ativos negociados na B3</p>
   </header>
   <div class="src">
-    <span class="dot"></span>
-    Fonte: <strong style="color:var(--text2);margin:0 3px">EmpresaTpCod.txt</strong> · Dropbox · <span id="ts"></span>
+    <span class="dot loading" id="dot"></span>
+    Fonte: <strong style="color:var(--text2);margin:0 3px">EmpresaTpCod.txt</strong> · Dropbox · <span id="ts">carregando...</span>
   </div>
   <div class="tb">
     <input type="text" id="busca" placeholder="Buscar ticker ou nome..." oninput="filtrar()">
@@ -96,284 +98,111 @@ footer{margin-top:2rem;font-size:12px;color:var(--text3);text-align:center}
       </tr></thead>
       <tbody id="tbody"></tbody>
     </table>
-    <div class="empty" id="empty" style="display:none">Nenhum ativo encontrado.</div>
+    <div class="empty" id="empty">Carregando dados...</div>
   </div>
   <footer>F90100 · K-EVA Framework · Mario Massao Kobayashi</footer>
 </div>
 <script>
-var dados = [
-["3TENTOSa","ON","TTEN3","Agropecuária",15.15,15.15,15.25],
-["BOA SAFRA","ON","SOJA3","Agropecuária",5.93,6.03,6.07],
-["BRASILAGRO","ON","AGRO3","Agropecuária",17.9,18.17,18.42],
-["MINERVA","ON","BEEF3","Alimentos Carnes",3.56,3.59,3.59],
-["CAMIL","ON","CAML3","Alimentos Processados",5.1,5.11,5.18],
-["JALLESMACHAD","ON","JALL3","Alimentos Processados",2.13,2.13,2.23],
-["M.DIASBRANCO","ON","MDIA3","Alimentos Processados",17.6,17.82,18.2],
-["SAO MARTINHO","ON","SMTO3","Alimentos Processados",15.01,15.04,15.25],
-["ARMAC","ON","ARML3","Aluguel de Carros",3.04,3.13,3.13],
-["LOCALIZA","ON","RENT3","Aluguel de Carros",42.9,43.1,43.61],
-["MOVIDA","ON","MOVI3","Aluguel de Carros",9.51,9.7,9.95],
-["VAMOS","ON","VAMO3","Aluguel de Carros",2.88,2.88,2.9],
-["IOCHP-MAXION","ON","MYPK3","Automóveis e Motocicletas",8.95,9.27,9.31],
-["METAL LEVE","ON","LEVE3","Automóveis e Motocicletas",32.8,33.4,33.93],
-["AMBEV S/A","ON","ABEV3","Bebidas",16.6,16.73,16.77],
-["ALPARGATAS","PN","ALPA4","Calçados",12.26,12.45,12.77],
-["KLABIN S/A","UNT","KLBN11","Celulose",16.96,16.96,17.02],
-["SUZANO S.A.","ON","SUZB3","Celulose",39.75,40.11,40.28],
-["ASSAI","ON","ASAI3","Comércio Alimentos",8.83,8.83,9.0],
-["GRUPO MATEUS","ON","GMAT3","Comércio Alimentos",3.86,3.87,3.95],
-["P.ACUCAR-CBD","ON","PCAR3","Comércio Alimentos",2.23,2.28,2.29],
-["AMERICANAS","ON","AMER3","Comércio Diversos",4.0,4.02,4.08],
-["ESPACOLASER","ON","ESPA3","Comércio Diversos",6.82,7.0,7.4],
-["GRUPO SBF","ON","SBFG3","Comércio Diversos",10.25,10.7,10.78],
-["PETZCOBASI","ON","AUAU3","Comércio Diversos",3.2,3.21,3.27],
-["QUERO-QUERO","ON","LJQQ3","Comércio Diversos",1.3,1.31,1.31],
-["CASAS BAHIA","ON","BHIA3","Comércio Eletrodomésticos",1.12,1.13,1.14],
-["MAGAZ LUIZA","ON","MGLU3","Comércio Eletrodomésticos",4.41,4.44,4.46],
-["DIMED","ON","PNVL3","Comércio Medicamentos",10.83,11.34,11.6],
-["RAIADROGASIL","ON","RADL3","Comércio Medicamentos",17.2,17.35,17.35],
-["VIVEO","ON","VVEO3","Comércio Medicamentos",0.76,0.77,0.79],
-["AZZAS 2154","ON","AZZA3","Comércio Vestuário",18.9,18.99,19.2],
-["CEA MODAS","ON","CEAB3","Comércio Vestuário",11.01,11.02,11.1],
-["LOJAS MARISA","ON","AMAR3","Comércio Vestuário",0.62,0.62,0.65],
-["LOJAS RENNER","ON","LREN3","Comércio Vestuário",14.78,14.97,14.97],
-["CURY S/A","ON","CURY3","Construção Civil",34.91,35.11,35.8],
-["CYRELA REALT","ON","CYRE3","Construção Civil",22.95,23.33,23.42],
-["DIRECIONAL","ON","DIRR3","Construção Civil",14.13,14.2,14.35],
-["EVEN","ON","EVEN3","Construção Civil",5.66,5.77,5.8],
-["EZTEC","ON","EZTC3","Construção Civil",13.12,13.35,13.54],
-["GAFISA","ON","GFSA3","Construção Civil",1.26,1.26,1.28],
-["HELBOR","ON","HBOR3","Construção Civil",2.2,2.2,2.2],
-["JHSF PART","ON","JHSF3","Construção Civil",11.25,11.35,11.43],
-["LAVVI","ON","LAVV3","Construção Civil",11.75,11.94,11.99],
-["MILLS","ON","MILS3","Construção Civil",15.23,15.49,15.52],
-["MITRE REALTY","ON","MTRE3","Construção Civil",3.33,3.34,3.38],
-["MOTIVA SA","ON","MOTV3","Construção Civil",14.29,14.48,14.75],
-["MOURA DUBEUX","ON","MDNE3","Construção Civil",29.06,29.48,29.59],
-["MRV","ON","MRVE3","Construção Civil",5.15,5.24,5.32],
-["PLANOEPLANO","ON","PLPL3","Construção Civil",8.31,8.54,8.68],
-["TECNISA","ON","TCSA3","Construção Civil",0.84,0.86,0.86],
-["TENDA","ON","TEND3","Construção Civil",36.81,36.85,37.48],
-["TRISUL","ON","TRIS3","Construção Civil",4.22,4.36,4.4],
-["PORTOBELLO","ON","PTBL3","Construção Produtos",1.56,1.62,1.69],
-["ANIMA","ON","ANIM3","Educação",2.68,2.74,2.79],
-["COGNA ON","ON","COGN3","Educação",2.29,2.3,2.31],
-["SER EDUCA","ON","SEER3","Educação",10.95,11.14,11.6],
-["YDUQS PART","ON","YDUQ3","Educação",8.8,8.9,8.96],
-["ALUPAR","UNT","ALUP11","Energia",32.13,32.79,33.25],
-["AUREN","ON","AURE3","Energia",11.34,11.55,11.63],
-["CEMIG","ON","CMIG3","Energia",15.2,15.6,16.0],
-["CEMIG","PN","CMIG4","Energia",10.97,10.96,11.0],
-["COPEL","ON","CPLE3","Energia",15.21,15.26,15.31],
-["CPFL ENERGIA","ON","CPFE3","Energia",45.19,45.5,45.67],
-["CSNMINERACAO","ON","CMIN3","Energia",4.25,4.25,4.31],
-["ENERGISA","UNT","ENGI11","Energia",47.05,47.6,47.6],
-["ENEVA","ON","ENEV3","Energia",26.27,26.81,26.99],
-["ENGIE BRASIL","ON","EGIE3","Energia",34.0,34.16,34.5],
-["EQUATORIAL","ON","EQTL3","Energia",39.66,39.75,39.96],
-["ISA ENERGIA","PN","ISAE4","Energia",27.9,28.2,28.37],
-["TAESA","UNT","TAEE11","Energia",39.5,39.72,39.99],
-["KEPLER WEBER","ON","KEPL3","Equipamentos Agropecuária",6.6,6.66,6.73],
-["SLC AGRICOLA","ON","SLCE3","Equipamentos Agropecuária",13.02,13.17,13.25],
-["TAURUS ARMAS","PN","TASA4","Equipamentos Armas",4.89,4.98,5.06],
-["AERIS","ON","AERI3","Equipamentos Industriais",2.05,2.08,2.2],
-["WEG","ON","WEGE3","Equipamentos Motores",46.62,46.9,46.85],
-["ROMI","ON","ROMI3","Equipamentos Transportes",6.0,6.04,6.1],
-["ABC BRASIL","PN","ABCB4","Financeiro",25.01,25.19,25.35],
-["B3","ON","B3SA3","Financeiro",14.9,14.92,15.05],
-["BANCO BMG","PN","BMGB4","Financeiro",5.27,5.3,5.32],
-["BANRISUL","PNB","BRSR6","Financeiro",13.67,13.82,13.98],
-["BRADESCO","ON","BBDC3","Financeiro",15.65,15.64,15.79],
-["BRADESCO","PN","BBDC4","Financeiro",17.92,17.92,18.1],
-["BRASIL","ON","BBAS3","Financeiro",20.25,20.34,20.4],
-["BTGP BANCO","UNT","BPAC11","Financeiro",53.88,54.66,55.1],
-["ITAUSA","PN","ITSA4","Financeiro",13.45,13.46,13.51],
-["ITAUUNIBANCO","ON","ITUB3","Financeiro",43.98,44.38,44.8],
-["ITAUUNIBANCO","PN","ITUB4","Financeiro",42.24,42.24,42.59],
-["SANTANDER BR","UNT","SANB11","Financeiro",26.21,26.35,26.67],
-["JBS N.V.","DR2","JBSS32","Frigorífico",62.25,62.67,63.5],
-["SIMPAR","ON","SIMH3","Holdings",7.9,8.07,8.11],
-["IMC S/A","ON","MEAL3","Hoteis e Restaurantes",0.96,0.96,0.96],
-["ALLOS","ON","ALOS3","Imóveis",27.88,28.04,28.25],
-["IGUATEMI S.A","UNT","IGTI11","Imóveis",24.99,25.6,25.67],
-["LOG COM PROP","ON","LOGG3","Imóveis",27.25,27.82,28.0],
-["MULTIPLAN","ON","MULT3","Imóveis",29.29,29.91,30.33],
-["ISHARE SP500","CI","IVVB11","Índice",426.52,427.03,430.0],
-["ISHARES BOVA","CI","BOVA11","Índice",170.43,170.22,170.63],
-["ISHARES SMAL","CI","SMAL11","Índice",107.51,108.75,109.0],
-["IT NOW IBOV","CI","BOVV11","Índice",172.57,178.59,179.96],
-["IT NOW PIBB","CI","PIBB11","Índice",300.78,308.55,312.03],
-["IT NOW SPXI","CI","SPXI11","Índice",51.62,51.7,52.7],
-["INTELBRAS","ON","INTB3","Informática Equipamentos",13.99,13.95,14.0],
-["MULTILASER","ON","MLAS3","Informática Equipamentos",1.65,1.69,1.69],
-["POSITIVO TEC","ON","POSI3","Informática Equipamentos",3.95,3.99,4.03],
-["BLAU","ON","BLAU3","Informática Programas",9.82,10.22,10.4],
-["ENJOEI","ON","ENJU3","Informática Programas",0.79,0.8,0.8],
-["GRUPO TOKY","ON","TOKY3","Informática Programas",0.26,0.28,0.26],
-["LWSA","ON","LWSA3","Informática Programas",4.0,4.15,4.17],
-["TOTVS","ON","TOTS3","Informática Programas",28.6,28.69,28.96],
-["SMART FIT","ON","SMFT3","Lazer Atividades Esportivas",19.33,19.42,19.51],
-["DEXCO","ON","DXCO3","Madeira e Papel",4.92,4.97,5.01],
-["IRANI","ON","RANI3","Madeira e Papel",7.75,7.8,7.81],
-["BRADESPAR","PN","BRAP4","Mineração e Siderurgia",22.08,22.21,22.24],
-["CBA","ON","CBAV3","Mineração e Siderurgia",10.7,10.73,10.76],
-["FERBASA","PN","FESA4","Mineração e Siderurgia",6.08,6.09,6.18],
-["GERDAU","PN","GGBR4","Mineração e Siderurgia",21.2,21.42,21.35],
-["GERDAU MET","PN","GOAU4","Mineração e Siderurgia",4.74,4.74,4.74],
-["USIMINAS","PNA","USIM5","Mineração e Siderurgia",8.2,8.27,8.27],
-["VALE","ON","VALE3","Mineração e Siderurgia",77.92,78.15,78.2],
-["BRASKEM","PNA","BRKM5","Petróleo e Gás",6.17,6.25,6.29],
-["BRAVA","ON","BRAV3","Petróleo e Gás",19.06,19.21,19.5],
-["COSAN","ON","CSAN3","Petróleo e Gás",3.7,3.76,3.8],
-["PETROBRAS","ON","PETR3","Petróleo e Gás",42.02,42.25,42.98],
-["PETROBRAS","PN","PETR4","Petróleo e Gás",37.9,38.06,38.13],
-["PETRORECSA","ON","RECV3","Petróleo e Gás",9.95,10.02,10.07],
-["PETRORIO","ON","PRIO3","Petróleo e Gás",53.17,53.29,54.2],
-["RAIZEN","PN","RAIZ4","Petróleo e Gás",0.41,0.41,0.41],
-["ULTRAPAR","ON","UGPA3","Petróleo e Gás",25.0,25.6,25.77],
-["VIBRA","ON","VBBR3","Petróleo e Gás",28.81,29.69,29.85],
-["WIZ CO","ON","WIZC3","Previdência e Seguros",7.8,7.88,8.0],
-["NATURA","ON","NATU3","Produto de Uso Pessoal",7.94,7.98,8.09],
-["UNIPAR","PNB","UNIP6","Químicos",59.7,59.71,61.0],
-["AMBIPAR","ON","AMBP3","Saneamento",0.17,0.18,0.18],
-["COPASA","ON","CSMG3","Saneamento",59.4,60.16,60.2],
-["ORIZON","ON","ORVR3","Saneamento",72.66,78.68,80.43],
-["SABESP","ON","SBSP3","Saneamento",29.27,29.6,29.85],
-["SANEPAR","UNT","SAPR11","Saneamento",37.4,37.45,37.99],
-["REDE D OR","ON","RDOR3","Saúde Análise",33.77,34.71,34.89],
-["DASA","ON","DASA3","Saúde Diagnósticos",2.74,2.78,2.87],
-["FLEURY","ON","FLRY3","Saúde Diagnósticos",15.51,15.61,15.65],
-["HAPVIDA","ON","HAPV3","Saúde Diagnósticos",10.02,10.24,10.18],
-["ONCOCLINICAS","ON","ONCO3","Saúde Diagnósticos",1.36,1.38,1.38],
-["QUALICORP","ON","QUAL3","Saúde Diagnósticos",1.8,1.8,1.81],
-["HYPERA","ON","HYPE3","Saúde Medicamentos",21.38,21.57,21.9],
-["BRADSAUDE","ON","SAUD3","Saúde Odonto",13.67,14.28,14.34],
-["BBSEGURIDADE","ON","BBSE3","Seguradora",39.07,39.17,39.19],
-["CAIXA SEGURI","ON","CXSE3","Seguradora",19.59,19.62,19.65],
-["IRBBRASIL RE","ON","IRBR3","Seguradora",55.15,55.33,55.99],
-["PORTO SEGURO","ON","PSSA3","Seguradora",52.52,53.26,53.26],
-["GPS","ON","GGPS3","Serviços",11.4,11.84,12.18],
-["MELIUZ","ON","CASH3","Serviços",3.91,4.09,4.15],
-["TC","ON","TRAD3","Serviços",1.15,1.15,1.25],
-["VALID","ON","VLID3","Serviços",17.19,17.37,17.54],
-["TELEF BRASIL","ON","VIVT3","Telecomunicações",34.6,34.79,35.12],
-["TIM","ON","TIMS3","Telecomunicações",22.5,22.73,22.85],
-["RUMO S.A.","ON","RAIL3","Transporte Ferroviário",13.62,13.69,13.81],
-["HIDROVIAS","ON","HBSA3","Transporte Hidroviário",3.55,3.72,3.74],
-["RANDON PART","PN","RAPT4","Transporte Materiais",4.53,4.57,4.61],
-["TUPY","ON","TUPY3","Transporte Materiais",15.15,15.55,15.6],
-["ECORODOVIAS","ON","ECOR3","Transporte Rodoviário",7.23,7.4,7.5],
-["MARCOPOLO","PN","POMO4","Transporte Rodoviário",5.83,5.85,5.9],
-["CVC BRASIL","ON","CVCB3","Turismo",1.4,1.41,1.42],
-["GRENDENE","ON","GRND3","Vestuário Calçados",3.85,3.86,3.88],
-["VIVARA S.A.","ON","VIVA3","Vestuário Calçados",23.15,23.54,23.98],
-["VULCABRAS","ON","VULC3","Vestuário Calçados",14.28,14.4,14.7],
-["ADVANCED MIC","DRN","A1MD34","",327.5,334.13,344.96],
-["ALIBABAGR","DRN","BABA34","",17.31,17.49,17.49],
-["ALPHABET","DRN","GOGL34","",144.08,146.08,149.0],
-["AMAZON","DRN","AMZO34","",58.99,59.92,60.25],
-["APPLE","DRN","AAPL34","",71.22,73.62,73.8],
-["BERKSHIRE","DRN","BERK34","",126.0,128.69,129.55],
-["CHEVRON","DRN","CHVX34","",87.33,88.2,88.2],
-["COCA COLA","DRN","COCA34","",70.35,71.67,71.88],
-["GOLDMANSACHS","DRN","GSGI34","",175.45,177.0,186.75],
-["INTEL","DRN","ITLC34","",109.03,109.5,112.0],
-["INTER CO","DR2","INBR32","",27.76,27.76,28.2],
-["JOHNSON","DRN","JNJB34","",86.0,87.3,87.8],
-["JPMORGAN","DRN","JPMC34","",169.0,170.17,174.1],
-["LILLY","DRN","LILY34","",197.88,208.8,208.8],
-["MCDONALDS","DRN","MCDC34","",68.0,68.99,69.93],
-["MERCADOLIBRE","DRN","MELI34","",71.55,71.7,72.55],
-["META PLAT","DRN","M1TA34","",100.3,101.44,101.17],
-["MICROSOFT","DRN","MSFT34","",80.0,80.25,81.0],
-["NETFLIX","DRN","NFLX34","",7.51,7.69,7.79],
-["NOVO NORDISK","DRN","N1VO34","",28.73,30.38,31.47],
-["NU HOLDINGS","DRN","ROXO34","",11.28,11.28,11.35],
-["NVIDIA CORP","DRN","NVDC34","",20.7,20.7,21.05],
-["PAGSEGURO","DRN","PAGS34","",9.0,9.13,9.47],
-["PAYPAL HOLD","DRN","PYPL34","",10.67,11.41,11.44],
-["RIO TINTO","DRN","RIOT34","",477.3,483.88,504.72],
-["TAIWANSMFAC","DRN","TSMC34","",272.22,279.43,283.15],
-["TESLA INC","DRN","TSLA34","",61.0,61.34,61.95],
-["VERIZON","DRN","VERZ34","",39.15,39.75,39.75],
-["VISA INC","DRN","VISA34","",87.55,88.28,89.0],
-["WAL MART","DRN","WALM34","",37.0,37.1,38.15],
-["XP INC","DR1","XPBR31","",81.9,82.92,83.1],
-["BEMOBI TECH","ON","BMOB3","",22.81,23.51,24.0],
-["LOG-IN","ON","LOGN3","",26.51,27.39,28.1],
-["MATER DEI","ON","MATD3","",4.75,4.88,4.99],
-["INFRACOMM","ON","IFCM3","",0.47,0.48,0.49],
-["SEQUOIA LOG","ON","SEQL3","",0.08,0.08,0.08],
-["TREND NASDAQ","CI","NASD11","",20.9,20.9,21.1],
-["TREND OURO","CI","GOLD11","",21.84,21.84,21.93],
-["CAIXAETFXBOV","CI","XBOV11","",130.0,169.24,169.24],
-["ISHARES BRAX","CI","BRAX11","",144.63,145.1,158.77],
-["ETF BRA IBOV","CI","BOVB11","",164.04,177.34,0]
-];
+// URL do Dropbox — dl=1 força download direto
+var DROPBOX_URL = 'https://www.dropbox.com/scl/fi/rbludicv21adowoafn4df/EmpresaTpCod?rlkey=km6racp5n4fm4v9pqwmp9etw5&st=1akjyt0j&dl=1';
 
-// converte array para objetos
-dados = dados.map(function(r){
-  return {nome:r[0],tipo:r[1],ticker:r[2],setor:r[3],bid:r[4]||null,last:r[5]||null,ask:r[6]||null};
-});
+var dados = [];
+var sortCol = 'ticker', sortAsc = true;
+var cols = ['ticker','nome','tipo','setor','bid','last','ask'];
 
-function fmt(v){
-  if(!v) return '<span class="z">—</span>';
+function parseNum(s) {
+  if (!s) return null;
+  var n = parseFloat(s.trim().replace(',','.'));
+  return (isNaN(n) || n === 0) ? null : n;
+}
+
+function parseTxt(txt) {
+  var linhas = txt.split('\n').map(function(l){return l.trim();});
+  var ativos = [], seen = {};
+  var i = 0;
+  while (i < linhas.length) {
+    while (i < linhas.length && !linhas[i]) i++;
+    if (i >= linhas.length) break;
+    var nome = linhas[i++];
+    if (i >= linhas.length) break;
+    var tipo = linhas[i++].split(/\s+/)[0];
+    if (i >= linhas.length) break;
+    var ticker = linhas[i++];
+    var setor = '';
+    if (i < linhas.length && linhas[i] && !linhas[i].match(/^\s*[\d,\.]+\s*$/)) {
+      setor = linhas[i++];
+    }
+    var bid  = i < linhas.length ? parseNum(linhas[i++]) : null;
+    var last = i < linhas.length ? parseNum(linhas[i++]) : null;
+    var ask  = i < linhas.length ? parseNum(linhas[i++]) : null;
+    if (ticker && !seen[ticker]) {
+      seen[ticker] = true;
+      ativos.push({nome:nome, tipo:tipo, ticker:ticker, setor:setor, bid:bid, last:last, ask:ask});
+    }
+  }
+  return ativos;
+}
+
+function fmt(v) {
+  if (!v) return '<span class="z">—</span>';
   return v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
 }
-function bc(t){
-  if(t==='ON') return 'bon';
-  if(t.indexOf('PN')===0) return 'bpn';
-  if(t==='DRN'||t==='DR1'||t==='DR2'||t==='DR3') return 'bbdr';
-  if(t==='UNT') return 'bunt';
-  if(t==='CI') return 'bci';
+
+function bc(t) {
+  if (t==='ON') return 'bon';
+  if (t.indexOf('PN')===0) return 'bpn';
+  if (t==='DRN'||t==='DR1'||t==='DR2'||t==='DR3') return 'bbdr';
+  if (t==='UNT') return 'bunt';
+  if (t==='CI') return 'bci';
   return 'bout';
 }
 
-var setores=[...new Set(dados.map(function(a){return a.setor}).filter(Boolean))].sort();
-var tipos=[...new Set(dados.map(function(a){return a.tipo}).filter(Boolean))].sort();
+function initUI() {
+  var setores = [...new Set(dados.map(function(a){return a.setor;}).filter(Boolean))].sort();
+  var tipos   = [...new Set(dados.map(function(a){return a.tipo;}).filter(Boolean))].sort();
+  var selS = document.getElementById('setor');
+  var selT = document.getElementById('tipo');
+  selS.innerHTML = '<option value="">Todos os setores</option>';
+  selT.innerHTML = '<option value="">Todos os tipos</option>';
+  setores.forEach(function(s){var o=document.createElement('option');o.value=s;o.textContent=s;selS.appendChild(o);});
+  tipos.forEach(function(t){var o=document.createElement('option');o.value=t;o.textContent=t;selT.appendChild(o);});
+  filtrar();
+}
 
-document.getElementById('ts').textContent=new Date().toLocaleString('pt-BR');
-
-var selS=document.getElementById('setor');
-setores.forEach(function(s){var o=document.createElement('option');o.value=s;o.textContent=s;selS.appendChild(o);});
-var selT=document.getElementById('tipo');
-tipos.forEach(function(t){var o=document.createElement('option');o.value=t;o.textContent=t;selT.appendChild(o);});
-
-var sortCol='ticker',sortAsc=true;
-var cols=['ticker','nome','tipo','setor','bid','last','ask'];
-
-function ord(col){
-  sortAsc=sortCol===col?!sortAsc:true;
-  sortCol=col;
+function ord(col) {
+  sortAsc = sortCol === col ? !sortAsc : true;
+  sortCol = col;
   cols.forEach(function(c){
-    document.getElementById('th-'+c).classList.toggle('sorted',c===col);
-    document.getElementById('arr-'+c).textContent=c!==col?'↕':(sortAsc?'↑':'↓');
+    document.getElementById('th-'+c).classList.toggle('sorted', c===col);
+    document.getElementById('arr-'+c).textContent = c!==col ? '↕' : (sortAsc ? '↑' : '↓');
   });
   filtrar();
 }
 
-function filtrar(){
-  var q=document.getElementById('busca').value.toLowerCase();
-  var s=document.getElementById('setor').value;
-  var t=document.getElementById('tipo').value;
-  var res=dados.filter(function(a){
-    return (!q||a.ticker.toLowerCase().indexOf(q)>=0||a.nome.toLowerCase().indexOf(q)>=0)&&
-           (!s||a.setor===s)&&(!t||a.tipo===t);
+function filtrar() {
+  var q = document.getElementById('busca').value.toLowerCase();
+  var s = document.getElementById('setor').value;
+  var t = document.getElementById('tipo').value;
+  var res = dados.filter(function(a){
+    return (!q || a.ticker.toLowerCase().indexOf(q)>=0 || a.nome.toLowerCase().indexOf(q)>=0) &&
+           (!s || a.setor===s) && (!t || a.tipo===t);
   });
   res.sort(function(a,b){
-    var va=a[sortCol],vb=b[sortCol];
-    if(typeof va==='string') va=va.toLowerCase();
-    if(typeof vb==='string') vb=vb.toLowerCase();
-    if(va===null||va===undefined) va=-Infinity;
-    if(vb===null||vb===undefined) vb=-Infinity;
-    return sortAsc?(va>vb?1:va<vb?-1:0):(va<vb?1:va>vb?-1:0);
+    var va=a[sortCol], vb=b[sortCol];
+    if (typeof va==='string') va=va.toLowerCase();
+    if (typeof vb==='string') vb=vb.toLowerCase();
+    if (va===null||va===undefined) va=-Infinity;
+    if (vb===null||vb===undefined) vb=-Infinity;
+    return sortAsc ? (va>vb?1:va<vb?-1:0) : (va<vb?1:va>vb?-1:0);
   });
-  document.getElementById('stats').innerHTML='<b>'+res.length+'</b> de <b>'+dados.length+'</b> ativos &nbsp;·&nbsp; <b>'+setores.length+'</b> setores';
-  var tbody=document.getElementById('tbody');
-  var empty=document.getElementById('empty');
-  if(!res.length){tbody.innerHTML='';empty.style.display='';return;}
-  empty.style.display='none';
-  tbody.innerHTML=res.map(function(a){
+  var setores = [...new Set(dados.map(function(a){return a.setor;}).filter(Boolean))];
+  document.getElementById('stats').innerHTML =
+    '<b>'+res.length+'</b> de <b>'+dados.length+'</b> ativos &nbsp;·&nbsp; <b>'+setores.length+'</b> setores';
+  var tbody = document.getElementById('tbody');
+  var empty = document.getElementById('empty');
+  if (!res.length) { tbody.innerHTML=''; empty.style.display=''; empty.textContent='Nenhum ativo encontrado.'; return; }
+  empty.style.display = 'none';
+  tbody.innerHTML = res.map(function(a){
     return '<tr>'+
       '<td class="ct">'+a.ticker+'</td>'+
       '<td class="cn" title="'+a.nome+'">'+a.nome+'</td>'+
@@ -386,7 +215,34 @@ function filtrar(){
   }).join('');
 }
 
-filtrar();
+// ── fetch do Dropbox ─────────────────────────────────────────
+function carregar() {
+  var dot = document.getElementById('dot');
+  var ts  = document.getElementById('ts');
+  dot.className = 'dot loading';
+  ts.textContent = 'carregando...';
+
+  fetch(DROPBOX_URL)
+    .then(function(r){
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.text();
+    })
+    .then(function(txt){
+      dados = parseTxt(txt);
+      dot.className = 'dot';
+      ts.textContent = new Date().toLocaleString('pt-BR');
+      initUI();
+    })
+    .catch(function(err){
+      dot.className = 'dot erro';
+      ts.textContent = 'erro ao carregar (' + err.message + ')';
+      document.getElementById('empty').textContent = 'Não foi possível carregar os dados do Dropbox.';
+    });
+}
+
+// carrega ao abrir e recarrega a cada 5 minutos
+carregar();
+setInterval(carregar, 5 * 60 * 1000);
 </script>
 </body>
 </html>
