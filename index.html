@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F90100 — Empresas B3</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f8f8f6;
+    --surface: #ffffff;
+    --surface2: #f2f2f0;
+    --border: rgba(0,0,0,0.10);
+    --border-strong: rgba(0,0,0,0.18);
+    --text: #0b0b0b;
+    --text2: #52514e;
+    --text3: #898781;
+    --accent: #2a78d6;
+    --accent-bg: #e6f1fb;
+    --accent-text: #185fa5;
+    --warn-bg: #faeeda;
+    --warn-text: #854f0b;
+    --success-bg: #eaf3de;
+    --success-text: #3b6d11;
+    --pro-bg: #eeedfe;
+    --pro-text: #534ab7;
+    --radius: 8px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111110;
+      --surface: #1a1a19;
+      --surface2: #222221;
+      --border: rgba(255,255,255,0.10);
+      --border-strong: rgba(255,255,255,0.18);
+      --text: #ffffff;
+      --text2: #c3c2b7;
+      --text3: #898781;
+      --accent: #3987e5;
+      --accent-bg: #0c447c22;
+      --accent-text: #85b7eb;
+      --warn-bg: #63380622;
+      --warn-text: #fac775;
+      --success-bg: #27500a22;
+      --success-text: #c0dd97;
+      --pro-bg: #3c348922;
+      --pro-text: #afa9ec;
+    }
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 15px; line-height: 1.5; }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 1.25rem 3rem; }
+  header { padding: 2rem 0 1rem; border-bottom: 0.5px solid var(--border); margin-bottom: 1.25rem; display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+  header h1 { font-size: 22px; font-weight: 500; color: var(--text); }
+  header p { font-size: 13px; color: var(--text3); margin-top: 2px; }
+  .source-bar { background: var(--surface2); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 7px 14px; font-size: 12px; color: var(--text3); display: flex; align-items: center; gap: 8px; margin-bottom: 1rem; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; flex-shrink: 0; }
+  .toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 0.75rem; }
+  .toolbar input, .toolbar select {
+    padding: 7px 11px; border: 0.5px solid var(--border-strong); border-radius: var(--radius);
+    background: var(--surface); color: var(--text); font-size: 14px; outline: none;
+  }
+  .toolbar input { flex: 1; min-width: 200px; }
+  .toolbar input:focus, .toolbar select:focus { border-color: var(--accent); }
+  .stats { font-size: 12px; color: var(--text3); margin-bottom: 0.75rem; }
+  .stats b { color: var(--text2); }
+  .tbl-wrap { border: 0.5px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--surface); }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  thead th {
+    background: var(--surface2); color: var(--text3); font-weight: 500; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.5px; padding: 9px 14px;
+    border-bottom: 0.5px solid var(--border); text-align: left; cursor: pointer;
+    user-select: none; white-space: nowrap;
+  }
+  thead th:hover { color: var(--text2); }
+  thead th.sorted { color: var(--accent-text); }
+  .arr { margin-left: 3px; opacity: 0.35; }
+  thead th.sorted .arr { opacity: 1; }
+  tbody tr { border-bottom: 0.5px solid var(--border); }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--surface2); }
+  td { padding: 9px 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: middle; }
+  .col-ticker { width: 100px; font-weight: 500; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; }
+  .col-nome { color: var(--text2); }
+  .col-tipo { width: 80px; }
+  .col-setor { color: var(--text3); font-size: 12px; width: 200px; }
+  .badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 99px; }
+  .b-on   { background: var(--accent-bg);   color: var(--accent-text); }
+  .b-pn   { background: var(--warn-bg);     color: var(--warn-text); }
+  .b-bdr  { background: var(--pro-bg);      color: var(--pro-text); }
+  .b-unt  { background: var(--success-bg);  color: var(--success-text); }
+  .b-ci   { background: var(--surface2);    color: var(--text3); border: 0.5px solid var(--border); }
+  .b-out  { background: var(--surface2);    color: var(--text3); border: 0.5px solid var(--border); }
+  .empty { text-align: center; padding: 3rem; color: var(--text3); font-size: 14px; }
+  footer { margin-top: 2rem; font-size: 12px; color: var(--text3); text-align: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>F90100 — Empresas B3</h1>
+      <p>Cadastro de ativos negociados na B3</p>
+    </div>
+  </header>
+
+  <div class="source-bar">
+    <span class="dot"></span>
+    Fonte: <strong style="color:var(--text2);margin:0 2px">EmpresaTpCod.txt</strong> · Dropbox · <span id="ts"></span>
+  </div>
+
+  <div class="toolbar">
+    <input type="text" id="busca" placeholder="Buscar ticker ou nome..." oninput="filtrar()">
+    <select id="setor" onchange="filtrar()"><option value="">Todos os setores</option></select>
+    <select id="tipo" onchange="filtrar()"><option value="">Todos os tipos</option></select>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="col-ticker" onclick="ordenar('ticker')" id="th-ticker">Ticker <span class="arr" id="arr-ticker">↕</span></th>
+          <th class="col-nome" onclick="ordenar('nome')" id="th-nome">Nome <span class="arr" id="arr-nome">↕</span></th>
+          <th class="col-tipo" onclick="ordenar('tipo')" id="th-tipo">Tipo <span class="arr" id="arr-tipo">↕</span></th>
+          <th class="col-setor" onclick="ordenar('setor')" id="th-setor">Setor <span class="arr" id="arr-setor">↕</span></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div class="empty" id="empty" style="display:none">Nenhum ativo encontrado.</div>
+  </div>
+
+  <footer>F90100 · K-EVA Framework · Mario Massao Kobayashi</footer>
+</div>
+
+<script>
+const TXT = `ADVANCED MIC
+DRN
+A1MD34
+
+APPLE
+DRN
+AAPL34
+
+ABC BRASIL
+PN      N2
+ABCB4
+Financeiro
+AMBEV S/A
+ON
+ABEV3
+Bebidas
+AERIS
+ON      NM
+AERI3
+Equipamentos Industriais
+BRASILAGRO
+ON      NM
+AGRO3
+Agropecuária
+ALLOS
+ON      NM
+ALOS3
+Imóveis
+ALPARGATAS
+PN      N1
+ALPA4
+Calçados
+ALUPAR
+UNT     N2
+ALUP11
+Energia
+LOJAS MARISA
+ON      NM
+AMAR3
+Comércio Vestuário
+AMBIPAR
+ON      NM
+AMBP3
+Saneamento
+AMERICANAS
+ON      NM
+AMER3
+Comércio Diversos
+AMAZON
+DRN
+AMZO34
+
+ANIMA
+ON      NM
+ANIM3
+Educação
+ARMAC
+ON      NM
+ARML3
+Aluguel de Carros
+ASSAI
+ON      NM
+ASAI3
+Comércio Alimentos
+AUREN
+ON      NM
+AURE3
+Energia
+AZUL
+PN      N2
+AZUL4
+Aeronáutico
+AZZAS 2154
+ON      NM
+AZZA3
+Comércio Vestuário
+B3
+ON      NM
+B3SA3
+Financeiro
+BRASIL
+ON      NM
+BBAS3
+Financeiro
+BRADESCO
+ON      N1
+BBDC3
+Financeiro
+BRADESCO
+PN      N1
+BBDC4
+Financeiro
+BBSEGURIDADE
+ON      NM
+BBSE3
+Seguradora
+MINERVA
+ON      NM
+BEEF3
+Alimentos Carnes
+CASAS BAHIA
+ON      NM
+BHIA3
+Comércio Eletrodomésticos
+BLAU
+ON      NM
+BLAU3
+Informática Programas
+BANCO BMG
+PN      N1
+BMGB4
+Financeiro
+BEMOBI TECH
+ON      NM
+BMOB3
+Informática Programas
+ISHARES BOVA
+CI
+BOVA11
+Índice
+IT NOW IBOV
+CI
+BOVV11
+Índice
+BTGP BANCO
+UNT     N2
+BPAC11
+Financeiro
+BANCO PAN
+PN      N1
+BPAN4
+Financeiro
+BRADESPAR
+PN      N1
+BRAP4
+Mineração e Siderurgia
+BRAVA
+ON      NM
+BRAV3
+Petróleo e Gás
+BRF SA
+ON      NM
+BRFS3
+Alimentos Carnes
+BRASKEM
+PNA     N1
+BRKM5
+Petróleo e Gás
+BANRISUL
+PNB     N1
+BRSR6
+Financeiro
+CAMIL
+ON      NM
+CAML3
+Alimentos Processados
+MELIUZ
+ON      NM
+CASH3
+Serviços
+CBA
+ON      NM
+CBAV3
+Mineração e Siderurgia
+CEA MODAS
+ON      NM
+CEAB3
+Comércio Vestuário
+CEMIG
+ON      N1
+CMIG3
+Energia
+CEMIG
+PN      N1
+CMIG4
+Energia
+CSNMINERACAO
+ON      N2
+CMIN3
+Mineração e Siderurgia
+COGNA ON
+ON      NM
+COGN3
+Educação
+CPFL ENERGIA
+ON      NM
+CPFE3
+Energia
+COPEL
+ON      N2
+CPLE3
+Energia
+COPEL
+PNB     N2
+CPLE6
+Energia
+COSAN
+ON      NM
+CSAN3
+Petróleo e Gás
+COPASA
+ON      NM
+CSMG3
+Saneamento
+SID NACIONAL
+ON
+CSNA3
+Mineração e Siderurgia
+CURY S/A
+ON      NM
+CURY3
+Construção Civil
+CVC BRASIL
+ON      NM
+CVCB3
+Turismo
+CAIXA SEGURI
+ON      NM
+CXSE3
+Seguradora
+CYRELA REALT
+ON      NM
+CYRE3
+Construção Civil
+DASA
+ON      NM
+DASA3
+Saúde Diagnósticos
+DIRECIONAL
+ON      NM
+DIRR3
+Construção Civil
+DEXCO
+ON      NM
+DXCO3
+Madeira e Papel
+ECORODOVIAS
+ON      NM
+ECOR3
+Transporte Rodoviário
+ENGIE BRASIL
+ON      NM
+EGIE3
+Energia
+ELETROBRAS
+ON      N1
+ELET3
+Energia
+ELETROBRAS
+PNB     N1
+ELET6
+Energia
+EMBRAER
+ON      NM
+EMBR3
+Aeronáutico
+ENEVA
+ON      NM
+ENEV3
+Energia
+ENERGISA
+UNT     N2
+ENGI11
+Energia
+ENJOEI
+ON      NM
+ENJU3
+Informática Programas
+EQUATORIAL
+ON      NM
+EQTL3
+Energia
+EVEN
+ON      NM
+EVEN3
+Construção Civil
+EZTEC
+ON      NM
+EZTC3
+Construção Civil
+FERBASA
+PN      N1
+FESA4
+Mineração e Siderurgia
+FLEURY
+ON      NM
+FLRY3
+Saúde Diagnósticos
+GAFISA
+ON      NM
+GFSA3
+Construção Civil
+GERDAU
+PN      N1
+GGBR4
+Mineração e Siderurgia
+GPS
+ON      NM
+GGPS3
+Serviços
+GRUPO MATEUS
+ON      NM
+GMAT3
+Comércio Alimentos
+GERDAU MET
+PN      N1
+GOAU4
+Mineração e Siderurgia
+ALPHABET
+DRN
+GOGL34
+
+GRENDENE
+ON      NM
+GRND3
+Vestuário Calçados
+GUARARAPES
+ON      NM
+GUAR3
+Comércio Vestuário
+HAPVIDA
+ON      NM
+HAPV3
+Saúde Diagnósticos
+HELBOR
+ON      NM
+HBOR3
+Construção Civil
+HIDROVIAS
+ON      NM
+HBSA3
+Transporte Hidroviário
+HYPERA
+ON      NM
+HYPE3
+Saúde Medicamentos
+IGUATEMI S.A
+UNT     N1
+IGTI11
+Imóveis
+INTELBRAS
+ON      NM
+INTB3
+Informática Equipamentos
+IRBBRASIL RE
+ON      NM
+IRBR3
+Seguradora
+ISA ENERGIA
+PN      N1
+ISAE4
+Energia
+ITAUSA
+PN      N1
+ITSA4
+Financeiro
+ITAUUNIBANCO
+ON      N1
+ITUB3
+Financeiro
+ITAUUNIBANCO
+PN      N1
+ITUB4
+Financeiro
+ISHARE SP500
+CI
+IVVB11
+Índice
+JALLESMACHAD
+ON      NM
+JALL3
+Alimentos Processados
+JBS N.V.
+DR2
+JBSS32
+Frigorífico
+JHSF PART
+ON      NM
+JHSF3
+Construção Civil
+KEPLER WEBER
+ON      NM
+KEPL3
+Equipamentos Agropecuária
+KLABIN S/A
+UNT     N2
+KLBN11
+Celulose
+LAVVI
+ON      NM
+LAVV3
+Construção Civil
+METAL LEVE
+ON      NM
+LEVE3
+Automóveis e Motocicletas
+QUERO-QUERO
+ON      NM
+LJQQ3
+Comércio Diversos
+LOG COM PROP
+ON      NM
+LOGG3
+Imóveis
+LOG-IN
+ON      NM
+LOGN3
+Transporte Hidroviário
+LOJAS RENNER
+ON      NM
+LREN3
+Comércio Vestuário
+LWSA
+ON      NM
+LWSA3
+Informática Programas
+MATER DEI
+ON      NM
+MATD3
+Saúde Diagnósticos
+M.DIASBRANCO
+ON      NM
+MDIA3
+Alimentos Processados
+MOURA DUBEUX
+ON      NM
+MDNE3
+Construção Civil
+IMC S/A
+ON      NM
+MEAL3
+Hoteis e Restaurantes
+MERCADOLIBRE
+DRN
+MELI34
+
+MAGAZ LUIZA
+ON      NM
+MGLU3
+Comércio Eletrodomésticos
+MILLS
+ON      NM
+MILS3
+Construção Civil
+MULTILASER
+ON      NM
+MLAS3
+Informática Equipamentos
+MOVIDA
+ON      NM
+MOVI3
+Aluguel de Carros
+MARFRIG
+ON      NM
+MRFG3
+Alimentos Carnes
+MRV
+ON      NM
+MRVE3
+Construção Civil
+MICROSOFT
+DRN
+MSFT34
+
+MITRE REALTY
+ON      NM
+MTRE3
+Construção Civil
+MULTIPLAN
+ON      N2
+MULT3
+Imóveis
+IOCHP-MAXION
+ON      NM
+MYPK3
+Automóveis e Motocicletas
+TREND NASDAQ
+CI
+NASD11
+Índice
+NATURA
+ON      NM
+NATU3
+Produto de Uso Pessoal
+NEOENERGIA
+ON      NM
+NEOE3
+Energia
+NETFLIX
+DRN
+NFLX34
+
+NVIDIA CORP
+DRN
+NVDC34
+
+ODONTOPREV
+ON      NM
+ODPV3
+Saúde Odonto
+ONCOCLINICAS
+ON      NM
+ONCO3
+Saúde Diagnósticos
+ORIZON
+ON      NM
+ORVR3
+Saneamento
+P.ACUCAR-CBD
+ON      NM
+PCAR3
+Comércio Alimentos
+PETROBRAS
+ON      N2
+PETR3
+Petróleo e Gás
+PETROBRAS
+PN      N2
+PETR4
+Petróleo e Gás
+PETZ
+ON      NM
+PETZ3
+Comércio Diversos
+IT NOW PIBB
+CI
+PIBB11
+Índice
+PLANOEPLANO
+ON      NM
+PLPL3
+Construção Civil
+DIMED
+ON      NM
+PNVL3
+Comércio Medicamentos
+MARCOPOLO
+PN      N2
+POMO4
+Transporte Rodoviário
+POSITIVO TEC
+ON      NM
+POSI3
+Informática Equipamentos
+PETRORIO
+ON      NM
+PRIO3
+Petróleo e Gás
+PORTO SEGURO
+ON      NM
+PSSA3
+Seguradora
+PORTOBELLO
+ON      NM
+PTBL3
+Construção Produtos
+QUALICORP
+ON      NM
+QUAL3
+Saúde Diagnósticos
+RAIADROGASIL
+ON      NM
+RADL3
+Comércio Medicamentos
+RUMO S.A.
+ON      NM
+RAIL3
+Transporte Ferroviário
+RAIZEN
+PN      N2
+RAIZ4
+Petróleo e Gás
+IRANI
+ON      NM
+RANI3
+Madeira e Papel
+RANDON PART
+PN      N1
+RAPT4
+Transporte Materiais
+REDE D OR
+ON      NM
+RDOR3
+Saúde Análise
+PETRORECSA
+ON      NM
+RECV3
+Petróleo e Gás
+LOCALIZA
+ON      NM
+RENT3
+Aluguel de Carros
+ROMI
+ON      NM
+ROMI3
+Equipamentos Transportes
+NU HOLDINGS
+DRN
+ROXO34
+
+SANTANDER BR
+UNT
+SANB11
+Financeiro
+SANEPAR
+UNT     N2
+SAPR11
+Saneamento
+GRUPO SBF
+ON      NM
+SBFG3
+Comércio Diversos
+SABESP
+ON      NM
+SBSP3
+Saneamento
+SER EDUCA
+ON      NM
+SEER3
+Educação
+SIMPAR
+ON      NM
+SIMH3
+Holdings
+SLC AGRICOLA
+ON      NM
+SLCE3
+Equipamentos Agropecuária
+ISHARES SMAL
+CI
+SMAL11
+Índice
+SMART FIT
+ON      NM
+SMFT3
+Lazer Atividades Esportivas
+SAO MARTINHO
+ON      NM
+SMTO3
+Alimentos Processados
+BOA SAFRA
+ON      NM
+SOJA3
+Agropecuária
+IT NOW SPXI
+CI
+SPXI11
+Índice
+SERENA
+ON      NM
+SRNA3
+Energia Elétrica
+SANTOS BRP
+ON      NM
+STBP3
+Transporte Armazenagem
+SUZANO S.A.
+ON      NM
+SUZB3
+Celulose
+TAESA
+UNT     N2
+TAEE11
+Energia
+TAURUS ARMAS
+PN      N2
+TASA4
+Equipamentos Armas
+TECNISA
+ON      NM
+TCSA3
+Construção Civil
+TENDA
+ON      NM
+TEND3
+Construção Civil
+TIM
+ON      NM
+TIMS3
+Telecomunicações
+TESLA INC
+DRN
+TSLA34
+
+TOTVS
+ON      NM
+TOTS3
+Informática Programas
+TC
+ON      NM
+TRAD3
+Serviços
+TRISUL
+ON      NM
+TRIS3
+Construção Civil
+3TENTOS
+ON      NM
+TTEN3
+Agropecuária
+TUPY
+ON      NM
+TUPY3
+Transporte Materiais
+ULTRAPAR
+ON      NM
+UGPA3
+Petróleo e Gás
+UNIPAR
+PNB
+UNIP6
+Químicos
+USIMINAS
+PNA     N1
+USIM5
+Mineração e Siderurgia
+VALE
+ON      NM
+VALE3
+Mineração e Siderurgia
+VAMOS
+ON      NM
+VAMO3
+Aluguel de Carros
+VIBRA
+ON      NM
+VBBR3
+Petróleo e Gás
+VISA INC
+DRN
+VISA34
+
+VIVARA S.A.
+ON      NM
+VIVA3
+Vestuário Calçados
+TELEF BRASIL
+ON
+VIVT3
+Telecomunicações
+VALID
+ON      NM
+VLID3
+Serviços
+VULCABRAS
+ON      NM
+VULC3
+Vestuário Calçados
+VIVEO
+ON      NM
+VVEO3
+Comércio Medicamentos
+WAL MART
+DRN
+WALM34
+
+WEG
+ON      NM
+WEGE3
+Equipamentos Motores
+WIZ CO
+ON      NM
+WIZC3
+Previdência e Seguros
+XP INC
+DR1
+XPBR31
+
+YDUQS PART
+ON      NM
+YDUQ3
+Educação
+ZAMP S.A.
+ON
+ZAMP3
+Hoteis e Restaurantes`;
+
+function parseTxt(txt) {
+  const linhas = txt.split('\n').map(l => l.trim());
+  const ativos = [], seen = new Set();
+  let i = 0;
+  while (i < linhas.length) {
+    if (!linhas[i]) { i++; continue; }
+    const nome = linhas[i]; i++;
+    if (i >= linhas.length) break;
+    const tipoFull = linhas[i].trim(); i++;
+    if (i >= linhas.length) break;
+    const ticker = linhas[i].trim(); i++;
+    let setor = '';
+    if (i < linhas.length && linhas[i] && linhas[i].length > 1) { setor = linhas[i].trim(); i++; }
+    if (ticker && !seen.has(ticker)) {
+      seen.add(ticker);
+      ativos.push({ nome, tipo: tipoFull.split(/\s+/)[0], ticker, setor });
+    }
+  }
+  return ativos;
+}
+
+const dados = parseTxt(TXT);
+const setores = [...new Set(dados.map(a => a.setor).filter(Boolean))].sort();
+const tipos   = [...new Set(dados.map(a => a.tipo).filter(Boolean))].sort();
+
+document.getElementById('ts').textContent = new Date().toLocaleString('pt-BR');
+
+const selS = document.getElementById('setor');
+setores.forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = s; selS.appendChild(o); });
+const selT = document.getElementById('tipo');
+tipos.forEach(t => { const o = document.createElement('option'); o.value = t; o.textContent = t; selT.appendChild(o); });
+
+let sortCol = 'ticker', sortAsc = true;
+
+function badgeClass(t) {
+  if (t === 'ON') return 'b-on';
+  if (t.startsWith('PN') || t.startsWith('PNA') || t.startsWith('PNB')) return 'b-pn';
+  if (t === 'DRN' || t === 'DR1' || t === 'DR2' || t === 'DR3') return 'b-bdr';
+  if (t === 'UNT') return 'b-unt';
+  if (t === 'CI') return 'b-ci';
+  return 'b-out';
+}
+
+function ordenar(col) {
+  sortAsc = sortCol === col ? !sortAsc : true;
+  sortCol = col;
+  ['ticker','nome','tipo','setor'].forEach(c => {
+    document.getElementById('th-'+c).classList.toggle('sorted', c === col);
+    document.getElementById('arr-'+c).textContent = c !== col ? '↕' : (sortAsc ? '↑' : '↓');
+  });
+  filtrar();
+}
+
+function filtrar() {
+  const q = document.getElementById('busca').value.toLowerCase();
+  const s = document.getElementById('setor').value;
+  const t = document.getElementById('tipo').value;
+  let res = dados.filter(a =>
+    (!q || a.ticker.toLowerCase().includes(q) || a.nome.toLowerCase().includes(q)) &&
+    (!s || a.setor === s) &&
+    (!t || a.tipo === t)
+  );
+  res.sort((a, b) => {
+    const va = (a[sortCol]||'').toLowerCase(), vb = (b[sortCol]||'').toLowerCase();
+    return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+  });
+  document.getElementById('stats').innerHTML =
+    `<b>${res.length}</b> de <b>${dados.length}</b> ativos &nbsp;·&nbsp; <b>${setores.length}</b> setores`;
+  const tbody = document.getElementById('tbody');
+  const empty = document.getElementById('empty');
+  if (!res.length) { tbody.innerHTML = ''; empty.style.display = ''; return; }
+  empty.style.display = 'none';
+  tbody.innerHTML = res.map(a => `
+    <tr>
+      <td class="col-ticker">${a.ticker}</td>
+      <td class="col-nome" title="${a.nome}">${a.nome}</td>
+      <td class="col-tipo"><span class="badge ${badgeClass(a.tipo)}">${a.tipo}</span></td>
+      <td class="col-setor">${a.setor || '—'}</td>
+    </tr>`).join('');
+}
+
+filtrar();
+</script>
+</body>
+</html>
