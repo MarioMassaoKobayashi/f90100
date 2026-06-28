@@ -5,71 +5,66 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>F90100 — Empresas B3</title>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #f8f8f6; --surface: #ffffff; --surface2: #f2f2f0;
-    --border: rgba(0,0,0,0.10); --border-strong: rgba(0,0,0,0.18);
-    --text: #0b0b0b; --text2: #52514e; --text3: #898781;
-    --accent: #2a78d6; --accent-bg: #e6f1fb; --accent-text: #185fa5;
-    --warn-bg: #faeeda; --warn-text: #854f0b;
-    --success-bg: #eaf3de; --success-text: #3b6d11;
-    --pro-bg: #eeedfe; --pro-text: #534ab7;
-    --radius: 8px;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #111110; --surface: #1a1a19; --surface2: #222221;
-      --border: rgba(255,255,255,0.10); --border-strong: rgba(255,255,255,0.18);
-      --text: #ffffff; --text2: #c3c2b7; --text3: #898781;
-      --accent-bg: #0c447c22; --accent-text: #85b7eb;
-      --warn-bg: #63380622; --warn-text: #fac775;
-      --success-bg: #27500a22; --success-text: #c0dd97;
-      --pro-bg: #3c348922; --pro-text: #afa9ec;
-    }
-  }
-  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 15px; }
-  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 1.25rem 3rem; }
-  header { padding: 2rem 0 1rem; border-bottom: 0.5px solid var(--border); margin-bottom: 1.25rem; }
-  header h1 { font-size: 22px; font-weight: 500; }
-  header p { font-size: 13px; color: var(--text3); margin-top: 2px; }
-  .source-bar { background: var(--surface2); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 7px 14px; font-size: 12px; color: var(--text3); display: flex; align-items: center; gap: 8px; margin-bottom: 1rem; }
-  .dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; flex-shrink: 0; }
-  .toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 0.75rem; }
-  .toolbar input, .toolbar select { padding: 7px 11px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); color: var(--text); font-size: 14px; outline: none; }
-  .toolbar input { flex: 1; min-width: 200px; }
-  .toolbar input:focus, .toolbar select:focus { border-color: var(--accent); }
-  .stats { font-size: 12px; color: var(--text3); margin-bottom: 0.75rem; }
-  .stats b { color: var(--text2); }
-  .tbl-wrap { border: 0.5px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--surface); }
-  table { width: 100%; border-collapse: collapse; }
-  thead th { background: var(--surface2); color: var(--text3); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; padding: 9px 12px; border-bottom: 0.5px solid var(--border); text-align: left; cursor: pointer; user-select: none; white-space: nowrap; }
-  thead th.right { text-align: right; }
-  thead th:hover { color: var(--text2); }
-  thead th.sorted { color: var(--accent-text); }
-  .arr { margin-left: 3px; opacity: 0.35; }
-  thead th.sorted .arr { opacity: 1; }
-  tbody tr { border-bottom: 0.5px solid var(--border); }
-  tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: var(--surface2); }
-  td { padding: 8px 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: middle; font-size: 13px; }
-  .c-ticker { width: 90px; font-weight: 500; font-family: 'SF Mono', 'Fira Code', monospace; }
-  .c-nome { color: var(--text2); max-width: 200px; }
-  .c-tipo { width: 72px; }
-  .c-setor { color: var(--text3); font-size: 12px; }
-  .c-num { text-align: right; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; width: 80px; }
-  .bid { color: #2563eb; }
-  .last { color: var(--text); font-weight: 500; }
-  .ask { color: #dc2626; }
-  .zero { color: var(--text3); }
-  .badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 99px; }
-  .b-on  { background: var(--accent-bg);  color: var(--accent-text); }
-  .b-pn  { background: var(--warn-bg);    color: var(--warn-text); }
-  .b-bdr { background: var(--pro-bg);     color: var(--pro-text); }
-  .b-unt { background: var(--success-bg); color: var(--success-text); }
-  .b-ci  { background: var(--surface2);   color: var(--text3); border: 0.5px solid var(--border); }
-  .b-out { background: var(--surface2);   color: var(--text3); border: 0.5px solid var(--border); }
-  .empty { text-align: center; padding: 3rem; color: var(--text3); font-size: 14px; }
-  footer { margin-top: 2rem; font-size: 12px; color: var(--text3); text-align: center; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f8f8f6;--surface:#fff;--surface2:#f2f2f0;
+  --border:rgba(0,0,0,.10);--border-strong:rgba(0,0,0,.18);
+  --text:#0b0b0b;--text2:#52514e;--text3:#898781;
+  --accent:#2a78d6;--accent-bg:#e6f1fb;--accent-text:#185fa5;
+  --warn-bg:#faeeda;--warn-text:#854f0b;
+  --ok-bg:#eaf3de;--ok-text:#3b6d11;
+  --pro-bg:#eeedfe;--pro-text:#534ab7;
+  --radius:8px
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#111110;--surface:#1a1a19;--surface2:#222221;
+  --border:rgba(255,255,255,.10);--border-strong:rgba(255,255,255,.18);
+  --text:#fff;--text2:#c3c2b7;--text3:#898781;
+  --accent-bg:#0c447c22;--accent-text:#85b7eb;
+  --warn-bg:#63380622;--warn-text:#fac775;
+  --ok-bg:#27500a22;--ok-text:#c0dd97;
+  --pro-bg:#3c348922;--pro-text:#afa9ec
+}}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px}
+.wrap{max-width:1100px;margin:0 auto;padding:0 1.25rem 3rem}
+header{padding:2rem 0 1rem;border-bottom:.5px solid var(--border);margin-bottom:1.25rem}
+header h1{font-size:22px;font-weight:500}
+header p{font-size:13px;color:var(--text3);margin-top:2px}
+.src{background:var(--surface2);border:.5px solid var(--border);border-radius:var(--radius);padding:7px 14px;font-size:12px;color:var(--text3);display:flex;align-items:center;gap:8px;margin-bottom:1rem}
+.dot{width:7px;height:7px;border-radius:50%;background:#22c55e;flex-shrink:0}
+.tb{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:.75rem}
+.tb input,.tb select{padding:7px 11px;border:.5px solid var(--border-strong);border-radius:var(--radius);background:var(--surface);color:var(--text);font-size:14px;outline:none}
+.tb input{flex:1;min-width:200px}
+.tb input:focus,.tb select:focus{border-color:var(--accent)}
+.stats{font-size:12px;color:var(--text3);margin-bottom:.75rem}
+.stats b{color:var(--text2)}
+.tw{border:.5px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface)}
+table{width:100%;border-collapse:collapse}
+thead th{background:var(--surface2);color:var(--text3);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:9px 12px;border-bottom:.5px solid var(--border);text-align:left;cursor:pointer;user-select:none;white-space:nowrap}
+thead th.r{text-align:right}
+thead th:hover{color:var(--text2)}
+thead th.sorted{color:var(--accent-text)}
+.arr{margin-left:3px;opacity:.35}
+thead th.sorted .arr{opacity:1}
+tbody tr{border-bottom:.5px solid var(--border)}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:var(--surface2)}
+td{padding:8px 12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:middle;font-size:13px}
+.ct{width:90px;font-weight:500;font-family:'SF Mono','Fira Code',monospace}
+.cn{color:var(--text2)}
+.ctp{width:72px}
+.cs{color:var(--text3);font-size:12px}
+.cp{text-align:right;font-family:'SF Mono','Fira Code',monospace;font-size:12px;width:80px}
+.bid{color:#2563eb}.last{font-weight:500}.ask{color:#dc2626}
+.z{color:var(--border-strong)}
+.badge{display:inline-block;font-size:10px;font-weight:500;padding:2px 7px;border-radius:99px}
+.bon{background:var(--accent-bg);color:var(--accent-text)}
+.bpn{background:var(--warn-bg);color:var(--warn-text)}
+.bbdr{background:var(--pro-bg);color:var(--pro-text)}
+.bunt{background:var(--ok-bg);color:var(--ok-text)}
+.bci,.bout{background:var(--surface2);color:var(--text3);border:.5px solid var(--border)}
+.empty{text-align:center;padding:3rem;color:var(--text3);font-size:14px}
+footer{margin-top:2rem;font-size:12px;color:var(--text3);text-align:center}
 </style>
 </head>
 <body>
@@ -78,1629 +73,320 @@
     <h1>F90100 — Empresas B3</h1>
     <p>Cadastro de ativos negociados na B3</p>
   </header>
-
-  <div class="source-bar">
+  <div class="src">
     <span class="dot"></span>
     Fonte: <strong style="color:var(--text2);margin:0 3px">EmpresaTpCod.txt</strong> · Dropbox · <span id="ts"></span>
   </div>
-
-  <div class="toolbar">
+  <div class="tb">
     <input type="text" id="busca" placeholder="Buscar ticker ou nome..." oninput="filtrar()">
     <select id="setor" onchange="filtrar()"><option value="">Todos os setores</option></select>
     <select id="tipo" onchange="filtrar()"><option value="">Todos os tipos</option></select>
   </div>
-
   <div class="stats" id="stats"></div>
-
-  <div class="tbl-wrap">
+  <div class="tw">
     <table>
-      <thead>
-        <tr>
-          <th class="c-ticker" onclick="ordenar('ticker')" id="th-ticker">Ticker <span class="arr" id="arr-ticker">↕</span></th>
-          <th class="c-nome" onclick="ordenar('nome')" id="th-nome">Nome <span class="arr" id="arr-nome">↕</span></th>
-          <th class="c-tipo" onclick="ordenar('tipo')" id="th-tipo">Tipo <span class="arr" id="arr-tipo">↕</span></th>
-          <th class="c-setor" onclick="ordenar('setor')" id="th-setor">Setor <span class="arr" id="arr-setor">↕</span></th>
-          <th class="c-num right" onclick="ordenar('bid')" id="th-bid">Bid <span class="arr" id="arr-bid">↕</span></th>
-          <th class="c-num right" onclick="ordenar('last')" id="th-last">Last <span class="arr" id="arr-last">↕</span></th>
-          <th class="c-num right" onclick="ordenar('ask')" id="th-ask">Ask <span class="arr" id="arr-ask">↕</span></th>
-        </tr>
-      </thead>
+      <thead><tr>
+        <th class="ct" onclick="ord('ticker')" id="th-ticker">Ticker <span class="arr" id="arr-ticker">↕</span></th>
+        <th class="cn" onclick="ord('nome')" id="th-nome">Nome <span class="arr" id="arr-nome">↕</span></th>
+        <th class="ctp" onclick="ord('tipo')" id="th-tipo">Tipo <span class="arr" id="arr-tipo">↕</span></th>
+        <th class="cs" onclick="ord('setor')" id="th-setor">Setor <span class="arr" id="arr-setor">↕</span></th>
+        <th class="cp r" onclick="ord('bid')" id="th-bid">Bid <span class="arr" id="arr-bid">↕</span></th>
+        <th class="cp r" onclick="ord('last')" id="th-last">Last <span class="arr" id="arr-last">↕</span></th>
+        <th class="cp r" onclick="ord('ask')" id="th-ask">Ask <span class="arr" id="arr-ask">↕</span></th>
+      </tr></thead>
       <tbody id="tbody"></tbody>
     </table>
     <div class="empty" id="empty" style="display:none">Nenhum ativo encontrado.</div>
   </div>
-
   <footer>F90100 · K-EVA Framework · Mario Massao Kobayashi</footer>
 </div>
-
 <script>
-// ── parser ──────────────────────────────────────────────────
-function parseNum(s) {
-  if (!s) return null;
-  const n = parseFloat(s.trim().replace(',', '.'));
-  return isNaN(n) || n === 0 ? null : n;
-}
+var dados = [
+["3TENTOS","ON","TTEN3","Agropecuária",15.15,15.15,15.25],
+["BOA SAFRA","ON","SOJA3","Agropecuária",5.93,6.03,6.07],
+["BRASILAGRO","ON","AGRO3","Agropecuária",17.9,18.17,18.42],
+["MINERVA","ON","BEEF3","Alimentos Carnes",3.56,3.59,3.59],
+["CAMIL","ON","CAML3","Alimentos Processados",5.1,5.11,5.18],
+["JALLESMACHAD","ON","JALL3","Alimentos Processados",2.13,2.13,2.23],
+["M.DIASBRANCO","ON","MDIA3","Alimentos Processados",17.6,17.82,18.2],
+["SAO MARTINHO","ON","SMTO3","Alimentos Processados",15.01,15.04,15.25],
+["ARMAC","ON","ARML3","Aluguel de Carros",3.04,3.13,3.13],
+["LOCALIZA","ON","RENT3","Aluguel de Carros",42.9,43.1,43.61],
+["MOVIDA","ON","MOVI3","Aluguel de Carros",9.51,9.7,9.95],
+["VAMOS","ON","VAMO3","Aluguel de Carros",2.88,2.88,2.9],
+["IOCHP-MAXION","ON","MYPK3","Automóveis e Motocicletas",8.95,9.27,9.31],
+["METAL LEVE","ON","LEVE3","Automóveis e Motocicletas",32.8,33.4,33.93],
+["AMBEV S/A","ON","ABEV3","Bebidas",16.6,16.73,16.77],
+["ALPARGATAS","PN","ALPA4","Calçados",12.26,12.45,12.77],
+["KLABIN S/A","UNT","KLBN11","Celulose",16.96,16.96,17.02],
+["SUZANO S.A.","ON","SUZB3","Celulose",39.75,40.11,40.28],
+["ASSAI","ON","ASAI3","Comércio Alimentos",8.83,8.83,9.0],
+["GRUPO MATEUS","ON","GMAT3","Comércio Alimentos",3.86,3.87,3.95],
+["P.ACUCAR-CBD","ON","PCAR3","Comércio Alimentos",2.23,2.28,2.29],
+["AMERICANAS","ON","AMER3","Comércio Diversos",4.0,4.02,4.08],
+["ESPACOLASER","ON","ESPA3","Comércio Diversos",6.82,7.0,7.4],
+["GRUPO SBF","ON","SBFG3","Comércio Diversos",10.25,10.7,10.78],
+["PETZCOBASI","ON","AUAU3","Comércio Diversos",3.2,3.21,3.27],
+["QUERO-QUERO","ON","LJQQ3","Comércio Diversos",1.3,1.31,1.31],
+["CASAS BAHIA","ON","BHIA3","Comércio Eletrodomésticos",1.12,1.13,1.14],
+["MAGAZ LUIZA","ON","MGLU3","Comércio Eletrodomésticos",4.41,4.44,4.46],
+["DIMED","ON","PNVL3","Comércio Medicamentos",10.83,11.34,11.6],
+["RAIADROGASIL","ON","RADL3","Comércio Medicamentos",17.2,17.35,17.35],
+["VIVEO","ON","VVEO3","Comércio Medicamentos",0.76,0.77,0.79],
+["AZZAS 2154","ON","AZZA3","Comércio Vestuário",18.9,18.99,19.2],
+["CEA MODAS","ON","CEAB3","Comércio Vestuário",11.01,11.02,11.1],
+["LOJAS MARISA","ON","AMAR3","Comércio Vestuário",0.62,0.62,0.65],
+["LOJAS RENNER","ON","LREN3","Comércio Vestuário",14.78,14.97,14.97],
+["CURY S/A","ON","CURY3","Construção Civil",34.91,35.11,35.8],
+["CYRELA REALT","ON","CYRE3","Construção Civil",22.95,23.33,23.42],
+["DIRECIONAL","ON","DIRR3","Construção Civil",14.13,14.2,14.35],
+["EVEN","ON","EVEN3","Construção Civil",5.66,5.77,5.8],
+["EZTEC","ON","EZTC3","Construção Civil",13.12,13.35,13.54],
+["GAFISA","ON","GFSA3","Construção Civil",1.26,1.26,1.28],
+["HELBOR","ON","HBOR3","Construção Civil",2.2,2.2,2.2],
+["JHSF PART","ON","JHSF3","Construção Civil",11.25,11.35,11.43],
+["LAVVI","ON","LAVV3","Construção Civil",11.75,11.94,11.99],
+["MILLS","ON","MILS3","Construção Civil",15.23,15.49,15.52],
+["MITRE REALTY","ON","MTRE3","Construção Civil",3.33,3.34,3.38],
+["MOTIVA SA","ON","MOTV3","Construção Civil",14.29,14.48,14.75],
+["MOURA DUBEUX","ON","MDNE3","Construção Civil",29.06,29.48,29.59],
+["MRV","ON","MRVE3","Construção Civil",5.15,5.24,5.32],
+["PLANOEPLANO","ON","PLPL3","Construção Civil",8.31,8.54,8.68],
+["TECNISA","ON","TCSA3","Construção Civil",0.84,0.86,0.86],
+["TENDA","ON","TEND3","Construção Civil",36.81,36.85,37.48],
+["TRISUL","ON","TRIS3","Construção Civil",4.22,4.36,4.4],
+["PORTOBELLO","ON","PTBL3","Construção Produtos",1.56,1.62,1.69],
+["ANIMA","ON","ANIM3","Educação",2.68,2.74,2.79],
+["COGNA ON","ON","COGN3","Educação",2.29,2.3,2.31],
+["SER EDUCA","ON","SEER3","Educação",10.95,11.14,11.6],
+["YDUQS PART","ON","YDUQ3","Educação",8.8,8.9,8.96],
+["ALUPAR","UNT","ALUP11","Energia",32.13,32.79,33.25],
+["AUREN","ON","AURE3","Energia",11.34,11.55,11.63],
+["CEMIG","ON","CMIG3","Energia",15.2,15.6,16.0],
+["CEMIG","PN","CMIG4","Energia",10.97,10.96,11.0],
+["COPEL","ON","CPLE3","Energia",15.21,15.26,15.31],
+["CPFL ENERGIA","ON","CPFE3","Energia",45.19,45.5,45.67],
+["CSNMINERACAO","ON","CMIN3","Energia",4.25,4.25,4.31],
+["ENERGISA","UNT","ENGI11","Energia",47.05,47.6,47.6],
+["ENEVA","ON","ENEV3","Energia",26.27,26.81,26.99],
+["ENGIE BRASIL","ON","EGIE3","Energia",34.0,34.16,34.5],
+["EQUATORIAL","ON","EQTL3","Energia",39.66,39.75,39.96],
+["ISA ENERGIA","PN","ISAE4","Energia",27.9,28.2,28.37],
+["TAESA","UNT","TAEE11","Energia",39.5,39.72,39.99],
+["KEPLER WEBER","ON","KEPL3","Equipamentos Agropecuária",6.6,6.66,6.73],
+["SLC AGRICOLA","ON","SLCE3","Equipamentos Agropecuária",13.02,13.17,13.25],
+["TAURUS ARMAS","PN","TASA4","Equipamentos Armas",4.89,4.98,5.06],
+["AERIS","ON","AERI3","Equipamentos Industriais",2.05,2.08,2.2],
+["WEG","ON","WEGE3","Equipamentos Motores",46.62,46.9,46.85],
+["ROMI","ON","ROMI3","Equipamentos Transportes",6.0,6.04,6.1],
+["ABC BRASIL","PN","ABCB4","Financeiro",25.01,25.19,25.35],
+["B3","ON","B3SA3","Financeiro",14.9,14.92,15.05],
+["BANCO BMG","PN","BMGB4","Financeiro",5.27,5.3,5.32],
+["BANRISUL","PNB","BRSR6","Financeiro",13.67,13.82,13.98],
+["BRADESCO","ON","BBDC3","Financeiro",15.65,15.64,15.79],
+["BRADESCO","PN","BBDC4","Financeiro",17.92,17.92,18.1],
+["BRASIL","ON","BBAS3","Financeiro",20.25,20.34,20.4],
+["BTGP BANCO","UNT","BPAC11","Financeiro",53.88,54.66,55.1],
+["ITAUSA","PN","ITSA4","Financeiro",13.45,13.46,13.51],
+["ITAUUNIBANCO","ON","ITUB3","Financeiro",43.98,44.38,44.8],
+["ITAUUNIBANCO","PN","ITUB4","Financeiro",42.24,42.24,42.59],
+["SANTANDER BR","UNT","SANB11","Financeiro",26.21,26.35,26.67],
+["JBS N.V.","DR2","JBSS32","Frigorífico",62.25,62.67,63.5],
+["SIMPAR","ON","SIMH3","Holdings",7.9,8.07,8.11],
+["IMC S/A","ON","MEAL3","Hoteis e Restaurantes",0.96,0.96,0.96],
+["ALLOS","ON","ALOS3","Imóveis",27.88,28.04,28.25],
+["IGUATEMI S.A","UNT","IGTI11","Imóveis",24.99,25.6,25.67],
+["LOG COM PROP","ON","LOGG3","Imóveis",27.25,27.82,28.0],
+["MULTIPLAN","ON","MULT3","Imóveis",29.29,29.91,30.33],
+["ISHARE SP500","CI","IVVB11","Índice",426.52,427.03,430.0],
+["ISHARES BOVA","CI","BOVA11","Índice",170.43,170.22,170.63],
+["ISHARES SMAL","CI","SMAL11","Índice",107.51,108.75,109.0],
+["IT NOW IBOV","CI","BOVV11","Índice",172.57,178.59,179.96],
+["IT NOW PIBB","CI","PIBB11","Índice",300.78,308.55,312.03],
+["IT NOW SPXI","CI","SPXI11","Índice",51.62,51.7,52.7],
+["INTELBRAS","ON","INTB3","Informática Equipamentos",13.99,13.95,14.0],
+["MULTILASER","ON","MLAS3","Informática Equipamentos",1.65,1.69,1.69],
+["POSITIVO TEC","ON","POSI3","Informática Equipamentos",3.95,3.99,4.03],
+["BLAU","ON","BLAU3","Informática Programas",9.82,10.22,10.4],
+["ENJOEI","ON","ENJU3","Informática Programas",0.79,0.8,0.8],
+["GRUPO TOKY","ON","TOKY3","Informática Programas",0.26,0.28,0.26],
+["LWSA","ON","LWSA3","Informática Programas",4.0,4.15,4.17],
+["TOTVS","ON","TOTS3","Informática Programas",28.6,28.69,28.96],
+["SMART FIT","ON","SMFT3","Lazer Atividades Esportivas",19.33,19.42,19.51],
+["DEXCO","ON","DXCO3","Madeira e Papel",4.92,4.97,5.01],
+["IRANI","ON","RANI3","Madeira e Papel",7.75,7.8,7.81],
+["BRADESPAR","PN","BRAP4","Mineração e Siderurgia",22.08,22.21,22.24],
+["CBA","ON","CBAV3","Mineração e Siderurgia",10.7,10.73,10.76],
+["FERBASA","PN","FESA4","Mineração e Siderurgia",6.08,6.09,6.18],
+["GERDAU","PN","GGBR4","Mineração e Siderurgia",21.2,21.42,21.35],
+["GERDAU MET","PN","GOAU4","Mineração e Siderurgia",4.74,4.74,4.74],
+["USIMINAS","PNA","USIM5","Mineração e Siderurgia",8.2,8.27,8.27],
+["VALE","ON","VALE3","Mineração e Siderurgia",77.92,78.15,78.2],
+["BRASKEM","PNA","BRKM5","Petróleo e Gás",6.17,6.25,6.29],
+["BRAVA","ON","BRAV3","Petróleo e Gás",19.06,19.21,19.5],
+["COSAN","ON","CSAN3","Petróleo e Gás",3.7,3.76,3.8],
+["PETROBRAS","ON","PETR3","Petróleo e Gás",42.02,42.25,42.98],
+["PETROBRAS","PN","PETR4","Petróleo e Gás",37.9,38.06,38.13],
+["PETRORECSA","ON","RECV3","Petróleo e Gás",9.95,10.02,10.07],
+["PETRORIO","ON","PRIO3","Petróleo e Gás",53.17,53.29,54.2],
+["RAIZEN","PN","RAIZ4","Petróleo e Gás",0.41,0.41,0.41],
+["ULTRAPAR","ON","UGPA3","Petróleo e Gás",25.0,25.6,25.77],
+["VIBRA","ON","VBBR3","Petróleo e Gás",28.81,29.69,29.85],
+["WIZ CO","ON","WIZC3","Previdência e Seguros",7.8,7.88,8.0],
+["NATURA","ON","NATU3","Produto de Uso Pessoal",7.94,7.98,8.09],
+["UNIPAR","PNB","UNIP6","Químicos",59.7,59.71,61.0],
+["AMBIPAR","ON","AMBP3","Saneamento",0.17,0.18,0.18],
+["COPASA","ON","CSMG3","Saneamento",59.4,60.16,60.2],
+["ORIZON","ON","ORVR3","Saneamento",72.66,78.68,80.43],
+["SABESP","ON","SBSP3","Saneamento",29.27,29.6,29.85],
+["SANEPAR","UNT","SAPR11","Saneamento",37.4,37.45,37.99],
+["REDE D OR","ON","RDOR3","Saúde Análise",33.77,34.71,34.89],
+["DASA","ON","DASA3","Saúde Diagnósticos",2.74,2.78,2.87],
+["FLEURY","ON","FLRY3","Saúde Diagnósticos",15.51,15.61,15.65],
+["HAPVIDA","ON","HAPV3","Saúde Diagnósticos",10.02,10.24,10.18],
+["ONCOCLINICAS","ON","ONCO3","Saúde Diagnósticos",1.36,1.38,1.38],
+["QUALICORP","ON","QUAL3","Saúde Diagnósticos",1.8,1.8,1.81],
+["HYPERA","ON","HYPE3","Saúde Medicamentos",21.38,21.57,21.9],
+["BRADSAUDE","ON","SAUD3","Saúde Odonto",13.67,14.28,14.34],
+["BBSEGURIDADE","ON","BBSE3","Seguradora",39.07,39.17,39.19],
+["CAIXA SEGURI","ON","CXSE3","Seguradora",19.59,19.62,19.65],
+["IRBBRASIL RE","ON","IRBR3","Seguradora",55.15,55.33,55.99],
+["PORTO SEGURO","ON","PSSA3","Seguradora",52.52,53.26,53.26],
+["GPS","ON","GGPS3","Serviços",11.4,11.84,12.18],
+["MELIUZ","ON","CASH3","Serviços",3.91,4.09,4.15],
+["TC","ON","TRAD3","Serviços",1.15,1.15,1.25],
+["VALID","ON","VLID3","Serviços",17.19,17.37,17.54],
+["TELEF BRASIL","ON","VIVT3","Telecomunicações",34.6,34.79,35.12],
+["TIM","ON","TIMS3","Telecomunicações",22.5,22.73,22.85],
+["RUMO S.A.","ON","RAIL3","Transporte Ferroviário",13.62,13.69,13.81],
+["HIDROVIAS","ON","HBSA3","Transporte Hidroviário",3.55,3.72,3.74],
+["RANDON PART","PN","RAPT4","Transporte Materiais",4.53,4.57,4.61],
+["TUPY","ON","TUPY3","Transporte Materiais",15.15,15.55,15.6],
+["ECORODOVIAS","ON","ECOR3","Transporte Rodoviário",7.23,7.4,7.5],
+["MARCOPOLO","PN","POMO4","Transporte Rodoviário",5.83,5.85,5.9],
+["CVC BRASIL","ON","CVCB3","Turismo",1.4,1.41,1.42],
+["GRENDENE","ON","GRND3","Vestuário Calçados",3.85,3.86,3.88],
+["VIVARA S.A.","ON","VIVA3","Vestuário Calçados",23.15,23.54,23.98],
+["VULCABRAS","ON","VULC3","Vestuário Calçados",14.28,14.4,14.7],
+["ADVANCED MIC","DRN","A1MD34","",327.5,334.13,344.96],
+["ALIBABAGR","DRN","BABA34","",17.31,17.49,17.49],
+["ALPHABET","DRN","GOGL34","",144.08,146.08,149.0],
+["AMAZON","DRN","AMZO34","",58.99,59.92,60.25],
+["APPLE","DRN","AAPL34","",71.22,73.62,73.8],
+["BERKSHIRE","DRN","BERK34","",126.0,128.69,129.55],
+["CHEVRON","DRN","CHVX34","",87.33,88.2,88.2],
+["COCA COLA","DRN","COCA34","",70.35,71.67,71.88],
+["GOLDMANSACHS","DRN","GSGI34","",175.45,177.0,186.75],
+["INTEL","DRN","ITLC34","",109.03,109.5,112.0],
+["INTER CO","DR2","INBR32","",27.76,27.76,28.2],
+["JOHNSON","DRN","JNJB34","",86.0,87.3,87.8],
+["JPMORGAN","DRN","JPMC34","",169.0,170.17,174.1],
+["LILLY","DRN","LILY34","",197.88,208.8,208.8],
+["MCDONALDS","DRN","MCDC34","",68.0,68.99,69.93],
+["MERCADOLIBRE","DRN","MELI34","",71.55,71.7,72.55],
+["META PLAT","DRN","M1TA34","",100.3,101.44,101.17],
+["MICROSOFT","DRN","MSFT34","",80.0,80.25,81.0],
+["NETFLIX","DRN","NFLX34","",7.51,7.69,7.79],
+["NOVO NORDISK","DRN","N1VO34","",28.73,30.38,31.47],
+["NU HOLDINGS","DRN","ROXO34","",11.28,11.28,11.35],
+["NVIDIA CORP","DRN","NVDC34","",20.7,20.7,21.05],
+["PAGSEGURO","DRN","PAGS34","",9.0,9.13,9.47],
+["PAYPAL HOLD","DRN","PYPL34","",10.67,11.41,11.44],
+["RIO TINTO","DRN","RIOT34","",477.3,483.88,504.72],
+["TAIWANSMFAC","DRN","TSMC34","",272.22,279.43,283.15],
+["TESLA INC","DRN","TSLA34","",61.0,61.34,61.95],
+["VERIZON","DRN","VERZ34","",39.15,39.75,39.75],
+["VISA INC","DRN","VISA34","",87.55,88.28,89.0],
+["WAL MART","DRN","WALM34","",37.0,37.1,38.15],
+["XP INC","DR1","XPBR31","",81.9,82.92,83.1],
+["BEMOBI TECH","ON","BMOB3","",22.81,23.51,24.0],
+["LOG-IN","ON","LOGN3","",26.51,27.39,28.1],
+["MATER DEI","ON","MATD3","",4.75,4.88,4.99],
+["INFRACOMM","ON","IFCM3","",0.47,0.48,0.49],
+["SEQUOIA LOG","ON","SEQL3","",0.08,0.08,0.08],
+["TREND NASDAQ","CI","NASD11","",20.9,20.9,21.1],
+["TREND OURO","CI","GOLD11","",21.84,21.84,21.93],
+["CAIXAETFXBOV","CI","XBOV11","",130.0,169.24,169.24],
+["ISHARES BRAX","CI","BRAX11","",144.63,145.1,158.77],
+["ETF BRA IBOV","CI","BOVB11","",164.04,177.34,0]
+];
 
-function fmtNum(v) {
-  if (v === null) return '<span class="zero">—</span>';
-  return v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
-
-function badgeClass(t) {
-  if (t === 'ON') return 'b-on';
-  if (t.startsWith('PN') || t.startsWith('PNA') || t.startsWith('PNB')) return 'b-pn';
-  if (t === 'DRN' || t === 'DR1' || t === 'DR2' || t === 'DR3') return 'b-bdr';
-  if (t === 'UNT') return 'b-unt';
-  if (t === 'CI')  return 'b-ci';
-  return 'b-out';
-}
-
-function parseTxt(txt) {
-  const linhas = txt.split('\n').map(l => l.trim());
-  const ativos = [], seen = new Set();
-  let i = 0;
-  while (i < linhas.length) {
-    // pula linhas vazias
-    while (i < linhas.length && !linhas[i]) i++;
-    if (i >= linhas.length) break;
-
-    const nome = linhas[i++];
-    if (i >= linhas.length) break;
-    const tipoFull = linhas[i++];
-    if (i >= linhas.length) break;
-    const ticker = linhas[i++];
-
-    // setor: linha não numérica e não vazia
-    let setor = '';
-    if (i < linhas.length && linhas[i] && !linhas[i].match(/^\s*[\d,\.]+\s*$/)) {
-      setor = linhas[i++];
-    }
-
-    // bid, last, ask
-    const bid  = i < linhas.length ? parseNum(linhas[i++]) : null;
-    const last = i < linhas.length ? parseNum(linhas[i++]) : null;
-    const ask  = i < linhas.length ? parseNum(linhas[i++]) : null;
-
-    if (ticker && !seen.has(ticker)) {
-      seen.add(ticker);
-      ativos.push({ nome, tipo: tipoFull.split(/\s+/)[0], ticker, setor, bid, last, ask });
-    }
-  }
-  return ativos;
-}
-
-// ── dados inline (substituir pelo fetch do Dropbox futuramente) ──
-// lidos após DOM estar pronto (script id="raw-data" está abaixo)
-let dados = [];
-
-// ── setup filtros ────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', function() {
-  const TXT_RAW = document.getElementById('raw-data').textContent;
-  dados = parseTxt(TXT_RAW);
-  init();
+// converte array para objetos
+dados = dados.map(function(r){
+  return {nome:r[0],tipo:r[1],ticker:r[2],setor:r[3],bid:r[4]||null,last:r[5]||null,ask:r[6]||null};
 });
 
-function init() {
-const setores = [...new Set(dados.map(a => a.setor).filter(Boolean))].sort();
-const tipos   = [...new Set(dados.map(a => a.tipo).filter(Boolean))].sort();
+function fmt(v){
+  if(!v) return '<span class="z">—</span>';
+  return v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function bc(t){
+  if(t==='ON') return 'bon';
+  if(t.indexOf('PN')===0) return 'bpn';
+  if(t==='DRN'||t==='DR1'||t==='DR2'||t==='DR3') return 'bbdr';
+  if(t==='UNT') return 'bunt';
+  if(t==='CI') return 'bci';
+  return 'bout';
+}
 
-document.getElementById('ts').textContent = new Date().toLocaleString('pt-BR');
+var setores=[...new Set(dados.map(function(a){return a.setor}).filter(Boolean))].sort();
+var tipos=[...new Set(dados.map(function(a){return a.tipo}).filter(Boolean))].sort();
 
-const selS = document.getElementById('setor');
-setores.forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = s; selS.appendChild(o); });
-const selT = document.getElementById('tipo');
-tipos.forEach(t => { const o = document.createElement('option'); o.value = t; o.textContent = t; selT.appendChild(o); });
+document.getElementById('ts').textContent=new Date().toLocaleString('pt-BR');
 
-// ── ordenação ────────────────────────────────────────────────
-let sortCol = 'ticker', sortAsc = true;
-const cols = ['ticker','nome','tipo','setor','bid','last','ask'];
+var selS=document.getElementById('setor');
+setores.forEach(function(s){var o=document.createElement('option');o.value=s;o.textContent=s;selS.appendChild(o);});
+var selT=document.getElementById('tipo');
+tipos.forEach(function(t){var o=document.createElement('option');o.value=t;o.textContent=t;selT.appendChild(o);});
 
-function ordenar(col) {
-  sortAsc = sortCol === col ? !sortAsc : true;
-  sortCol = col;
-  cols.forEach(c => {
-    document.getElementById('th-'+c).classList.toggle('sorted', c === col);
-    document.getElementById('arr-'+c).textContent = c !== col ? '↕' : (sortAsc ? '↑' : '↓');
+var sortCol='ticker',sortAsc=true;
+var cols=['ticker','nome','tipo','setor','bid','last','ask'];
+
+function ord(col){
+  sortAsc=sortCol===col?!sortAsc:true;
+  sortCol=col;
+  cols.forEach(function(c){
+    document.getElementById('th-'+c).classList.toggle('sorted',c===col);
+    document.getElementById('arr-'+c).textContent=c!==col?'↕':(sortAsc?'↑':'↓');
   });
   filtrar();
 }
 
-// ── filtro e render ──────────────────────────────────────────
-function filtrar() {
-  const q = document.getElementById('busca').value.toLowerCase();
-  const s = document.getElementById('setor').value;
-  const t = document.getElementById('tipo').value;
-
-  let res = dados.filter(a =>
-    (!q || a.ticker.toLowerCase().includes(q) || a.nome.toLowerCase().includes(q)) &&
-    (!s || a.setor === s) &&
-    (!t || a.tipo === t)
-  );
-
-  res.sort((a, b) => {
-    let va = a[sortCol], vb = b[sortCol];
-    if (typeof va === 'string') va = va.toLowerCase();
-    if (typeof vb === 'string') vb = vb.toLowerCase();
-    va = va ?? -Infinity;
-    vb = vb ?? -Infinity;
-    return sortAsc ? (va > vb ? 1 : va < vb ? -1 : 0) : (va < vb ? 1 : va > vb ? -1 : 0);
+function filtrar(){
+  var q=document.getElementById('busca').value.toLowerCase();
+  var s=document.getElementById('setor').value;
+  var t=document.getElementById('tipo').value;
+  var res=dados.filter(function(a){
+    return (!q||a.ticker.toLowerCase().indexOf(q)>=0||a.nome.toLowerCase().indexOf(q)>=0)&&
+           (!s||a.setor===s)&&(!t||a.tipo===t);
   });
-
-  document.getElementById('stats').innerHTML =
-    `<b>${res.length}</b> de <b>${dados.length}</b> ativos &nbsp;·&nbsp; <b>${setores.length}</b> setores`;
-
-  const tbody = document.getElementById('tbody');
-  const empty = document.getElementById('empty');
-  if (!res.length) { tbody.innerHTML = ''; empty.style.display = ''; return; }
-  empty.style.display = 'none';
-
-  tbody.innerHTML = res.map(a => `
-    <tr>
-      <td class="c-ticker">${a.ticker}</td>
-      <td class="c-nome" title="${a.nome}">${a.nome}</td>
-      <td class="c-tipo"><span class="badge ${badgeClass(a.tipo)}">${a.tipo}</span></td>
-      <td class="c-setor">${a.setor || '<span style="color:var(--border-strong)">—</span>'}</td>
-      <td class="c-num bid">${fmtNum(a.bid)}</td>
-      <td class="c-num last">${fmtNum(a.last)}</td>
-      <td class="c-num ask">${fmtNum(a.ask)}</td>
-    </tr>`).join('');
+  res.sort(function(a,b){
+    var va=a[sortCol],vb=b[sortCol];
+    if(typeof va==='string') va=va.toLowerCase();
+    if(typeof vb==='string') vb=vb.toLowerCase();
+    if(va===null||va===undefined) va=-Infinity;
+    if(vb===null||vb===undefined) vb=-Infinity;
+    return sortAsc?(va>vb?1:va<vb?-1:0):(va<vb?1:va>vb?-1:0);
+  });
+  document.getElementById('stats').innerHTML='<b>'+res.length+'</b> de <b>'+dados.length+'</b> ativos &nbsp;·&nbsp; <b>'+setores.length+'</b> setores';
+  var tbody=document.getElementById('tbody');
+  var empty=document.getElementById('empty');
+  if(!res.length){tbody.innerHTML='';empty.style.display='';return;}
+  empty.style.display='none';
+  tbody.innerHTML=res.map(function(a){
+    return '<tr>'+
+      '<td class="ct">'+a.ticker+'</td>'+
+      '<td class="cn" title="'+a.nome+'">'+a.nome+'</td>'+
+      '<td class="ctp"><span class="badge '+bc(a.tipo)+'">'+a.tipo+'</span></td>'+
+      '<td class="cs">'+(a.setor||'<span class="z">—</span>')+'</td>'+
+      '<td class="cp bid">'+fmt(a.bid)+'</td>'+
+      '<td class="cp last">'+fmt(a.last)+'</td>'+
+      '<td class="cp ask">'+fmt(a.ask)+'</td>'+
+      '</tr>';
+  }).join('');
 }
 
 filtrar();
-} // end init
-</script>
-
-<!-- dados do arquivo TXT (substituir pelo fetch do Dropbox) -->
-<script id="raw-data" type="text/plain">
-3TENTOS
-ON      NM
-TTEN3
-Agropecuária
- 15,15 
- 15,15 
- 15,25 
-BOA SAFRA
-ON      NM
-SOJA3
-Agropecuária
- 5,93 
- 6,03 
- 6,07 
-BRASILAGRO
-ON      NM
-AGRO3
-Agropecuária
- 17,9 
- 18,17 
- 18,42 
-MINERVA
-ON      NM
-BEEF3
-Alimentos Carnes
- 3,56 
- 3,59 
- 3,59 
-CAMIL
-ON      NM
-CAML3
-Alimentos Processados
- 5,1 
- 5,11 
- 5,18 
-JALLESMACHAD
-ON      NM
-JALL3
-Alimentos Processados
- 2,13 
- 2,13 
- 2,23 
-M.DIASBRANCO
-ON      NM
-MDIA3
-Alimentos Processados
- 17,6 
- 17,82 
- 18,2 
-SAO MARTINHO
-ON      NM
-SMTO3
-Alimentos Processados
- 15,01 
- 15,04 
- 15,25 
-ARMAC
-ON      NM
-ARML3
-Aluguel de Carros
- 3,04 
- 3,13 
- 3,13 
-LOCALIZA
-ON      NM
-RENT3
-Aluguel de Carros
- 42,9 
- 43,1 
- 43,61 
-MOVIDA
-ON      NM
-MOVI3
-Aluguel de Carros
- 9,51 
- 9,7 
- 9,95 
-VAMOS
-ON      NM
-VAMO3
-Aluguel de Carros
- 2,88 
- 2,88 
- 2,9 
-IOCHP-MAXION
-ON      NM
-MYPK3
-Automóveis e Motocicletas
- 8,95 
- 9,27 
- 9,31 
-METAL LEVE
-ON      NM
-LEVE3
-Automóveis e Motocicletas
- 32,8 
- 33,4 
- 33,93 
-AMBEV S/A
-ON
-ABEV3
-Bebidas
- 16,6 
- 16,73 
- 16,77 
-ALPARGATAS
-PN      N1
-ALPA4
-Calçados
- 12,26 
- 12,45 
- 12,77 
-KLABIN S/A
-UNT     N2
-KLBN11
-Celulose
- 16,96 
- 16,96 
- 17,02 
-SUZANO S.A.
-ON      NM
-SUZB3
-Celulose
- 39,75 
- 40,11 
- 40,28 
-ASSAI
-ON      NM
-ASAI3
-Comércio Alimentos
- 8,83 
- 8,83 
- 9 
-GRUPO MATEUS
-ON      NM
-GMAT3
-Comércio Alimentos
- 3,86 
- 3,87 
- 3,95 
-P.ACUCAR-CBD
-ON      NM
-PCAR3
-Comércio Alimentos
- 2,23 
- 2,28 
- 2,29 
-AMERICANAS
-ON      NM
-AMER3
-Comércio Diversos
- 4 
- 4,02 
- 4,08 
-ESPACOLASER
-ON      NM
-ESPA3
-Comércio Diversos
- 6,82 
- 7 
- 7,4 
-GRUPO SBF
-ON      NM
-SBFG3
-Comércio Diversos
- 10,25 
- 10,7 
- 10,78 
-PETZCOBASI
-ON      NM
-AUAU3
-Comércio Diversos
- 3,2 
- 3,21 
- 3,27 
-QUERO-QUERO
-ON      NM
-LJQQ3
-Comércio Diversos
- 1,3 
- 1,31 
- 1,31 
-CASAS BAHIA
-ON      NM
-BHIA3
-Comércio Eletrodomésticos
- 1,12 
- 1,13 
- 1,14 
-MAGAZ LUIZA
-ON      NM
-MGLU3
-Comércio Eletrodomésticos
- 4,41 
- 4,44 
- 4,46 
-DIMED
-ON      NM
-PNVL3
-Comércio Medicamentos
- 10,83 
- 11,34 
- 11,6 
-RAIADROGASIL
-ON      NM
-RADL3
-Comércio Medicamentos
- 17,2 
- 17,35 
- 17,35 
-VIVEO
-ON      NM
-VVEO3
-Comércio Medicamentos
- 0,76 
- 0,77 
- 0,79 
-AZZAS 2154
-ON      NM
-AZZA3
-Comércio Vestuário
- 18,9 
- 18,99 
- 19,2 
-CEA MODAS
-ON      NM
-CEAB3
-Comércio Vestuário
- 11,01 
- 11,02 
- 11,1 
-LOJAS MARISA
-ON      NM
-AMAR3
-Comércio Vestuário
- 0,62 
- 0,62 
- 0,65 
-LOJAS RENNER
-ON      NM
-LREN3
-Comércio Vestuário
- 14,78 
- 14,97 
- 14,97 
-CURY S/A
-ON      NM
-CURY3
-Construção Civil
- 34,91 
- 35,11 
- 35,8 
-CYRELA REALT
-ON      NM
-CYRE3
-Construção Civil
- 22,95 
- 23,33 
- 23,42 
-DIRECIONAL
-ON      NM
-DIRR3
-Construção Civil
- 14,13 
- 14,2 
- 14,35 
-EVEN
-ON      NM
-EVEN3
-Construção Civil
- 5,66 
- 5,77 
- 5,8 
-EZTEC
-ON      NM
-EZTC3
-Construção Civil
- 13,12 
- 13,35 
- 13,54 
-GAFISA
-ON      NM
-GFSA3
-Construção Civil
- 1,26 
- 1,26 
- 1,28 
-HELBOR
-ON      NM
-HBOR3
-Construção Civil
- 2,2 
- 2,2 
- 2,2 
-JHSF PART
-ON      NM
-JHSF3
-Construção Civil
- 11,25 
- 11,35 
- 11,43 
-LAVVI
-ON      NM
-LAVV3
-Construção Civil
- 11,75 
- 11,94 
- 11,99 
-MILLS
-ON      NM
-MILS3
-Construção Civil
- 15,23 
- 15,49 
- 15,52 
-MITRE REALTY
-ON      NM
-MTRE3
-Construção Civil
- 3,33 
- 3,34 
- 3,38 
-MOTIVA SA
-ON      NM
-MOTV3
-Construção Civil
- 14,29 
- 14,48 
- 14,75 
-MOURA DUBEUX
-ON      NM
-MDNE3
-Construção Civil
- 29,06 
- 29,48 
- 29,59 
-MRV
-ON      NM
-MRVE3
-Construção Civil
- 5,15 
- 5,24 
- 5,32 
-PLANOEPLANO
-ON      NM
-PLPL3
-Construção Civil
- 8,31 
- 8,54 
- 8,68 
-TECNISA
-ON      NM
-TCSA3
-Construção Civil
- 0,84 
- 0,86 
- 0,86 
-TENDA
-ON      NM
-TEND3
-Construção Civil
- 36,81 
- 36,85 
- 37,48 
-TRISUL
-ON      NM
-TRIS3
-Construção Civil
- 4,22 
- 4,36 
- 4,4 
-PORTOBELLO
-ON      NM
-PTBL3
-Construção Produtos
- 1,56 
- 1,62 
- 1,69 
-ANIMA
-ON      NM
-ANIM3
-Educação
- 2,68 
- 2,74 
- 2,79 
-COGNA ON
-ON      NM
-COGN3
-Educação
- 2,29 
- 2,3 
- 2,31 
-SER EDUCA
-ON      NM
-SEER3
-Educação
- 10,95 
- 11,14 
- 11,6 
-YDUQS PART
-ON      NM
-YDUQ3
-Educação
- 8,8 
- 8,9 
- 8,96 
-ALUPAR
-UNT     N2
-ALUP11
-Energia
- 32,13 
- 32,79 
- 33,25 
-AUREN
-ON      NM
-AURE3
-Energia
- 11,34 
- 11,55 
- 11,63 
-CEMIG
-ON      N1
-CMIG3
-Energia
- 15,2 
- 15,6 
- 16 
-CEMIG
-PN      N1
-CMIG4
-Energia
- 10,97 
- 10,96 
- 11 
-COPEL
-ON      N2
-CPLE3
-Energia
- 15,21 
- 15,26 
- 15,31 
-CPFL ENERGIA
-ON      NM
-CPFE3
-Energia
- 45,19 
- 45,5 
- 45,67 
-CSNMINERACAO
-ON      N2
-CMIN3
-Energia
- 4,25 
- 4,25 
- 4,31 
-ENERGISA
-UNT     N2
-ENGI11
-Energia
- 47,05 
- 47,6 
- 47,6 
-ENEVA
-ON      NM
-ENEV3
-Energia
- 26,27 
- 26,81 
- 26,99 
-ENGIE BRASIL
-ON      NM
-EGIE3
-Energia
- 34 
- 34,16 
- 34,5 
-EQUATORIAL
-ON      NM
-EQTL3
-Energia
- 39,66 
- 39,75 
- 39,96 
-ISA ENERGIA
-PN      N1
-ISAE4
-Energia
- 27,9 
- 28,2 
- 28,37 
-TAESA
-UNT     N2
-TAEE11
-Energia
- 39,5 
- 39,72 
- 39,99 
-KEPLER WEBER
-ON      NM
-KEPL3
-Equipamentos Agropecuária
- 6,6 
- 6,66 
- 6,73 
-SLC AGRICOLA
-ON      NM
-SLCE3
-Equipamentos Agropecuária
- 13,02 
- 13,17 
- 13,25 
-TAURUS ARMAS
-PN      N2
-TASA4
-Equipamentos Armas
- 4,89 
- 4,98 
- 5,06 
-AERIS
-ON      NM
-AERI3
-Equipamentos Industriais
- 2,05 
- 2,08 
- 2,2 
-WEG
-ON      NM
-WEGE3
-Equipamentos Motores
- 46,62 
- 46,9 
- 46,85 
-ROMI
-ON      NM
-ROMI3
-Equipamentos Transportes
- 6 
- 6,04 
- 6,1 
-ABC BRASIL
-PN      N2
-ABCB4
-Financeiro
- 25,01 
- 25,19 
- 25,35 
-B3
-ON      NM
-B3SA3
-Financeiro
- 14,9 
- 14,92 
- 15,05 
-BANCO BMG
-PN      N1
-BMGB4
-Financeiro
- 5,27 
- 5,3 
- 5,32 
-BANRISUL
-PNB     N1
-BRSR6
-Financeiro
- 13,67 
- 13,82 
- 13,98 
-BRADESCO
-ON      N1
-BBDC3
-Financeiro
- 15,65 
- 15,64 
- 15,79 
-BRADESCO
-PN      N1
-BBDC4
-Financeiro
- 17,92 
- 17,92 
- 18,1 
-BRASIL
-ON      NM
-BBAS3
-Financeiro
- 20,25 
- 20,34 
- 20,4 
-BTGP BANCO
-UNT     N2
-BPAC11
-Financeiro
- 53,88 
- 54,66 
- 55,1 
-ITAUSA
-PN      N1
-ITSA4
-Financeiro
- 13,45 
- 13,46 
- 13,51 
-ITAUUNIBANCO
-ON      N1
-ITUB3
-Financeiro
- 43,98 
- 44,38 
- 44,8 
-ITAUUNIBANCO
-PN      N1
-ITUB4
-Financeiro
- 42,24 
- 42,24 
- 42,59 
-SANTANDER BR
-UNT
-SANB11
-Financeiro
- 26,21 
- 26,35 
- 26,67 
-JBS N.V.
-DR2
-JBSS32
-Frigorífico
- 62,25 
- 62,67 
- 63,5 
-SIMPAR
-ON      NM
-SIMH3
-Holdings
- 7,9 
- 8,07 
- 8,11 
-IMC S/A
-ON      NM
-MEAL3
-Hoteis e Restaurantes
- 0,96 
- 0,96 
- 0,96 
-ALLOS
-ON      NM
-ALOS3
-Imóveis
- 27,88 
- 28,04 
- 28,25 
-IGUATEMI S.A
-UNT     N1
-IGTI11
-Imóveis
- 24,99 
- 25,6 
- 25,67 
-LOG COM PROP
-ON      NM
-LOGG3
-Imóveis
- 27,25 
- 27,82 
- 28 
-MULTIPLAN
-ON      N2
-MULT3
-Imóveis
- 29,29 
- 29,91 
- 30,33 
-ISHARE SP500
-CI
-IVVB11
-Índice
- 426,52 
- 427,03 
- 430 
-ISHARES BOVA
-CI
-BOVA11
-Índice
- 170,43 
- 170,22 
- 170,63 
-ISHARES SMAL
-CI
-SMAL11
-Índice
- 107,51 
- 108,75 
- 109 
-IT NOW IBOV
-CI
-BOVV11
-Índice
- 172,57 
- 178,59 
- 179,96 
-IT NOW PIBB
-CI
-PIBB11
-Índice
- 300,78 
- 308,55 
- 312,03 
-IT NOW SPXI
-CI
-SPXI11
-Índice
- 51,62 
- 51,7 
- 52,7 
-INTELBRAS
-ON      NM
-INTB3
-Informática Equipamentos
- 13,99 
- 13,95 
- 14 
-MULTILASER
-ON      NM
-MLAS3
-Informática Equipamentos
- 1,65 
- 1,69 
- 1,69 
-POSITIVO TEC
-ON      NM
-POSI3
-Informática Equipamentos
- 3,95 
- 3,99 
- 4,03 
-BLAU
-ON      NM
-BLAU3
-Informática Programas
- 9,82 
- 10,22 
- 10,4 
-ENJOEI
-ON      NM
-ENJU3
-Informática Programas
- 0,79 
- 0,8 
- 0,8 
-GRUPO TOKY
-ON      NM
-TOKY3
-Informática Programas
- 0,26 
- 0,28 
- 0,26 
-LWSA
-ON      NM
-LWSA3
-Informática Programas
- 4 
- 4,15 
- 4,17 
-TOTVS
-ON      NM
-TOTS3
-Informática Programas
- 28,6 
- 28,69 
- 28,96 
-SMART FIT
-ON      NM
-SMFT3
-Lazer Atividades Esportivas
- 19,33 
- 19,42 
- 19,51 
-DEXCO
-ON      NM
-DXCO3
-Madeira e Papel
- 4,92 
- 4,97 
- 5,01 
-IRANI
-ON      NM
-RANI3
-Madeira e Papel
- 7,75 
- 7,8 
- 7,81 
-BRADESPAR
-PN      N1
-BRAP4
-Mineração e Siderurgia
- 22,08 
- 22,21 
- 22,24 
-CBA
-ON      NM
-CBAV3
-Mineração e Siderurgia
- 10,7 
- 10,73 
- 10,76 
-FERBASA
-PN      N1
-FESA4
-Mineração e Siderurgia
- 6,08 
- 6,09 
- 6,18 
-GERDAU
-PN      N1
-GGBR4
-Mineração e Siderurgia
- 21,2 
- 21,42 
- 21,35 
-GERDAU MET
-PN      N1
-GOAU4
-Mineração e Siderurgia
- 4,74 
- 4,74 
- 4,74 
-USIMINAS
-PNA     N1
-USIM5
-Mineração e Siderurgia
- 8,2 
- 8,27 
- 8,27 
-VALE
-ON      NM
-VALE3
-Mineração e Siderurgia
- 77,92 
- 78,15 
- 78,2 
-BRASKEM
-PNA     N1
-BRKM5
-Petróleo e Gás
- 6,17 
- 6,25 
- 6,29 
-BRAVA
-ON      NM
-BRAV3
-Petróleo e Gás
- 19,06 
- 19,21 
- 19,5 
-COSAN
-ON      NM
-CSAN3
-Petróleo e Gás
- 3,7 
- 3,76 
- 3,8 
-PETROBRAS
-ON      N2
-PETR3
-Petróleo e Gás
- 42,02 
- 42,25 
- 42,98 
-PETROBRAS
-PN      N2
-PETR4
-Petróleo e Gás
- 37,9 
- 38,06 
- 38,13 
-PETRORECSA
-ON      NM
-RECV3
-Petróleo e Gás
- 9,95 
- 10,02 
- 10,07 
-PETRORIO
-ON      NM
-PRIO3
-Petróleo e Gás
- 53,17 
- 53,29 
- 54,2 
-RAIZEN
-PN      N2
-RAIZ4
-Petróleo e Gás
- 0,41 
- 0,41 
- 0,41 
-ULTRAPAR
-ON      NM
-UGPA3
-Petróleo e Gás
- 25 
- 25,6 
- 25,77 
-VIBRA
-ON      NM
-VBBR3
-Petróleo e Gás
- 28,81 
- 29,69 
- 29,85 
-WIZ CO
-ON      NM
-WIZC3
-Previdência e Seguros
- 7,8 
- 7,88 
- 8 
-NATURA
-ON      NM
-NATU3
-Produto de Uso Pessoal
- 7,94 
- 7,98 
- 8,09 
-UNIPAR
-PNB
-UNIP6
-Químicos
- 59,7 
- 59,71 
- 61 
-AMBIPAR
-ON      NM
-AMBP3
-Saneamento
- 0,17 
- 0,18 
- 0,18 
-COPASA
-ON      NM
-CSMG3
-Saneamento
- 59,4 
- 60,16 
- 60,2 
-ORIZON
-ON      NM
-ORVR3
-Saneamento
- 72,66 
- 78,68 
- 80,43 
-SABESP
-ON      NM
-SBSP3
-Saneamento
- 29,27 
- 29,6 
- 29,85 
-SANEPAR
-UNT     N2
-SAPR11
-Saneamento
- 37,4 
- 37,45 
- 37,99 
-REDE D OR
-ON      NM
-RDOR3
-Saúde Análise
- 33,77 
- 34,71 
- 34,89 
-DASA
-ON      NM
-DASA3
-Saúde Diagnósticos
- 2,74 
- 2,78 
- 2,87 
-FLEURY
-ON      NM
-FLRY3
-Saúde Diagnósticos
- 15,51 
- 15,61 
- 15,65 
-HAPVIDA
-ON      NM
-HAPV3
-Saúde Diagnósticos
- 10,02 
- 10,24 
- 10,18 
-ONCOCLINICAS
-ON      NM
-ONCO3
-Saúde Diagnósticos
- 1,36 
- 1,38 
- 1,38 
-QUALICORP
-ON      NM
-QUAL3
-Saúde Diagnósticos
- 1,8 
- 1,8 
- 1,81 
-HYPERA
-ON      NM
-HYPE3
-Saúde Medicamentos
- 21,38 
- 21,57 
- 21,9 
-BRADSAUDE
-ON      NM
-SAUD3
-Saúde Odonto
- 13,67 
- 14,28 
- 14,34 
-BBSEGURIDADE
-ON      NM
-BBSE3
-Seguradora
- 39,07 
- 39,17 
- 39,19 
-CAIXA SEGURI
-ON      NM
-CXSE3
-Seguradora
- 19,59 
- 19,62 
- 19,65 
-IRBBRASIL RE
-ON      NM
-IRBR3
-Seguradora
- 55,15 
- 55,33 
- 55,99 
-PORTO SEGURO
-ON      NM
-PSSA3
-Seguradora
- 52,52 
- 53,26 
- 53,26 
-GPS
-ON      NM
-GGPS3
-Serviços
- 11,4 
- 11,84 
- 12,18 
-MELIUZ
-ON      NM
-CASH3
-Serviços
- 3,91 
- 4,09 
- 4,15 
-TC
-ON      NM
-TRAD3
-Serviços
- 1,15 
- 1,15 
- 1,25 
-VALID
-ON      NM
-VLID3
-Serviços
- 17,19 
- 17,37 
- 17,54 
-TELEF BRASIL
-ON
-VIVT3
-Telecomunicações
- 34,6 
- 34,79 
- 35,12 
-TIM
-ON      NM
-TIMS3
-Telecomunicações
- 22,5 
- 22,73 
- 22,85 
-RUMO S.A.
-ON      NM
-RAIL3
-Transporte Ferroviário
- 13,62 
- 13,69 
- 13,81 
-HIDROVIAS
-ON      NM
-HBSA3
-Transporte Hidroviário
- 3,55 
- 3,72 
- 3,74 
-RANDON PART
-PN      N1
-RAPT4
-Transporte Materiais
- 4,53 
- 4,57 
- 4,61 
-TUPY
-ON      NM
-TUPY3
-Transporte Materiais
- 15,15 
- 15,55 
- 15,6 
-ECORODOVIAS
-ON      NM
-ECOR3
-Transporte Rodoviário
- 7,23 
- 7,4 
- 7,5 
-MARCOPOLO
-PN      N2
-POMO4
-Transporte Rodoviário
- 5,83 
- 5,85 
- 5,9 
-CVC BRASIL
-ON      NM
-CVCB3
-Turismo
- 1,4 
- 1,41 
- 1,42 
-GRENDENE
-ON      NM
-GRND3
-Vestuário Calçados
- 3,85 
- 3,86 
- 3,88 
-VIVARA S.A.
-ON      NM
-VIVA3
-Vestuário Calçados
- 23,15 
- 23,54 
- 23,98 
-VULCABRAS
-ON      NM
-VULC3
-Vestuário Calçados
- 14,28 
- 14,4 
- 14,7 
-ADVANCED MIC
-DRN
-A1MD34
-
- 327,5 
- 334,13 
- 344,96 
-ALIBABAGR
-DRN
-BABA34
-
- 17,31 
- 17,49 
- 17,49 
-ALPHABET
-DRN
-GOGL34
-
- 144,08 
- 146,08 
- 149 
-AMAZON
-DRN
-AMZO34
-
- 58,99 
- 59,92 
- 60,25 
-APPLE
-DRN
-AAPL34
-
- 71,22 
- 73,62 
- 73,8 
-BERKSHIRE
-DRN
-BERK34
-
- 126 
- 128,69 
- 129,55 
-CHEVRON
-DRN
-CHVX34
-
- 87,33 
- 88,2 
- 88,2 
-COCA COLA
-DRN
-COCA34
-
- 70,35 
- 71,67 
- 71,88 
-GOLDMANSACHS
-DRN
-GSGI34
-
- 175,45 
- 177 
- 186,75 
-INTEL
-DRN
-ITLC34
-
- 109,03 
- 109,5 
- 112 
-INTER CO
-DR2
-INBR32
-
- 27,76 
- 27,76 
- 28,2 
-JOHNSON
-DRN
-JNJB34
-
- 86 
- 87,3 
- 87,8 
-JPMORGAN
-DRN
-JPMC34
-
- 169 
- 170,17 
- 174,1 
-LILLY
-DRN
-LILY34
-
- 197,88 
- 208,8 
- 208,8 
-MCDONALDS
-DRN
-MCDC34
-
- 68 
- 68,99 
- 69,93 
-MERCADOLIBRE
-DRN
-MELI34
-
- 71,55 
- 71,7 
- 72,55 
-META PLAT
-DRN
-M1TA34
-
- 100,3 
- 101,44 
- 101,17 
-MICROSOFT
-DRN
-MSFT34
-
- 80 
- 80,25 
- 81 
-NETFLIX
-DRN
-NFLX34
-
- 7,51 
- 7,69 
- 7,79 
-NOVO NORDISK
-DRN
-N1VO34
-
- 28,73 
- 30,38 
- 31,47 
-NU HOLDINGS
-DRN
-ROXO34
-
- 11,28 
- 11,28 
- 11,35 
-NVIDIA CORP
-DRN
-NVDC34
-
- 20,7 
- 20,7 
- 21,05 
-PAGSEGURO
-DRN
-PAGS34
-
- 9 
- 9,13 
- 9,47 
-PAYPAL HOLD
-DRN
-PYPL34
-
- 10,67 
- 11,41 
- 11,44 
-RIO TINTO
-DRN
-RIOT34
-
- 477,3 
- 483,88 
- 504,72 
-TAIWANSMFAC
-DRN
-TSMC34
-
- 272,22 
- 279,43 
- 283,15 
-TESLA INC
-DRN
-TSLA34
-
- 61 
- 61,34 
- 61,95 
-VERIZON
-DRN
-VERZ34
-
- 39,15 
- 39,75 
- 39,75 
-VISA INC
-DRN
-VISA34
-
- 87,55 
- 88,28 
- 89 
-WAL MART
-DRN
-WALM34
-
- 37 
- 37,1 
- 38,15 
-XP INC
-DR1
-XPBR31
-
- 81,9 
- 82,92 
- 83,1 
-BEMOBI TECH
-ON      NM
-BMOB3
-
- 22,81 
- 23,51 
- 24 
-LOG-IN
-ON      NM
-LOGN3
-
- 26,51 
- 27,39 
- 28,1 
-MATER DEI
-ON      NM
-MATD3
-
- 4,75 
- 4,88 
- 4,99 
-INFRACOMM
-ON      NM
-IFCM3
-
- 0,47 
- 0,48 
- 0,49 
-SEQUOIA LOG
-ON      NM
-SEQL3
-
- 0,08 
- 0,08 
- 0,08 
-TREND NASDAQ
-CI
-NASD11
-
- 20,9 
- 20,9 
- 21,1 
-TREND OURO
-CI
-GOLD11
-
- 21,84 
- 21,84 
- 21,93 
-CAIXAETFXBOV
-CI
-XBOV11
-
- 130 
- 169,24 
- 169,24 
-ISHARES BRAX
-CI
-BRAX11
-
- 144,63 
- 145,1 
- 158,77 
-ETF BRA IBOV
-CI
-BOVB11
-
- 164,04 
- 177,34 
- 0 
 </script>
 </body>
 </html>
