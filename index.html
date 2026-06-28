@@ -170,10 +170,17 @@ function parseTxt(txt) {
 }
 
 // ── dados inline (substituir pelo fetch do Dropbox futuramente) ──
-const TXT_RAW = document.getElementById('raw-data').textContent;
-const dados = parseTxt(TXT_RAW);
+// lidos após DOM estar pronto (script id="raw-data" está abaixo)
+let dados = [];
 
 // ── setup filtros ────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  const TXT_RAW = document.getElementById('raw-data').textContent;
+  dados = parseTxt(TXT_RAW);
+  init();
+});
+
+function init() {
 const setores = [...new Set(dados.map(a => a.setor).filter(Boolean))].sort();
 const tipos   = [...new Set(dados.map(a => a.tipo).filter(Boolean))].sort();
 
@@ -240,6 +247,7 @@ function filtrar() {
 }
 
 filtrar();
+} // end init
 </script>
 
 <!-- dados do arquivo TXT (substituir pelo fetch do Dropbox) -->
